@@ -133,8 +133,9 @@ function startMusic(){
   if(promise!==undefined){
     promise.then(()=>{
       setMusicUI(true);
+      removeInteractionListeners();
     }).catch(err=>{
-      console.log('Audio autoplay prevented:',err);
+      console.log('Audio autoplay prevented by browser policy, waiting for first interaction:',err);
     });
   }
 }
@@ -161,14 +162,26 @@ if(musicToggleBtn){
   });
 }
 
-function handleFirstInteraction(){
-  if(!userHasInteracted&&!isMusicPlaying){
+const interactionEvents=['click','touchstart','pointerdown','scroll','keydown'];
+function onUserInteraction(){
+  if(!isMusicPlaying){
     userHasInteracted=true;
     startMusic();
   }
 }
-window.addEventListener('click',handleFirstInteraction,{once:true});
-window.addEventListener('touchstart',handleFirstInteraction,{once:true});
+function removeInteractionListeners(){
+  interactionEvents.forEach(evt=>{
+    window.removeEventListener(evt,onUserInteraction);
+  });
+}
+interactionEvents.forEach(evt=>{
+  window.addEventListener(evt,onUserInteraction,{passive:true});
+});
+
+// Attempt autoplay immediately on load
+startMusic();
+window.addEventListener('DOMContentLoaded',startMusic);
+window.addEventListener('load',startMusic);
 
 document.getElementById('revealBtn').addEventListener('click',()=>{
   burst();
