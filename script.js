@@ -54,6 +54,8 @@ function closeGift(){
   isGiftOpen=false;
   const stage=document.getElementById('giftStage');
   const hint=document.getElementById('giftHint');
+  const giftFrameEl=document.querySelector('.gift-img-frame');
+  if(giftFrameEl)giftFrameEl.classList.remove('photo-zoomed');
   if(stage)stage.classList.remove('gift-open');
   if(hint)hint.innerHTML='<span class="hint-sparkle">✨</span> Tap the gift box to open! <span class="hint-sparkle">✨</span>';
 }
@@ -103,6 +105,14 @@ if(rewrapBtn)rewrapBtn.addEventListener('click',(e)=>{
   e.stopPropagation();
   closeGift();
 });
+
+const giftFrameEl=document.querySelector('.gift-img-frame');
+if(giftFrameEl){
+  giftFrameEl.addEventListener('click',(e)=>{
+    e.stopPropagation();
+    giftFrameEl.classList.toggle('photo-zoomed');
+  });
+}
 
 // Background Music System
 const bgMusic=document.getElementById('bgMusic');
