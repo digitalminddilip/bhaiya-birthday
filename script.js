@@ -47,6 +47,10 @@ function openGift(){
   playGiftChime();
   burst();
   setTimeout(()=>burst(),300);
+  setTimeout(()=>{
+    const card=document.getElementById('giftCardWrap');
+    if(card)card.scrollIntoView({behavior:'smooth',block:'center'});
+  },200);
 }
 
 function closeGift(){
@@ -58,6 +62,9 @@ function closeGift(){
   if(giftFrameEl)giftFrameEl.classList.remove('photo-zoomed');
   if(stage)stage.classList.remove('gift-open');
   if(hint)hint.innerHTML='<span class="hint-sparkle">✨</span> Tap the gift box to open! <span class="hint-sparkle">✨</span>';
+  setTimeout(()=>{
+    if(stage)stage.scrollIntoView({behavior:'smooth',block:'center'});
+  },250);
 }
 
 function nextGiftMemory(e){
