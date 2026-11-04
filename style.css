@@ -267,6 +267,24 @@ h1 {
 }
 
 /* Letters / Message Grid */
+.message {
+  text-align: center;
+}
+
+.message-single {
+  max-width: 680px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.message-single .letter {
+  border-radius: 20px;
+  padding: 38px 34px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, .075), rgba(255, 255, 255, .025));
+  border: 1.5px solid rgba(255, 255, 255, .18);
+  box-shadow: 0 24px 75px rgba(0, 0, 0, .45);
+}
+
 .message-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
