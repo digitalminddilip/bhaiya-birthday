@@ -1131,8 +1131,9 @@ footer {
 footer p { margin: 12px 0; }
 .footer-small { font: 10px 'DM Mono', monospace; letter-spacing: .5px; }
 
-/* Footer Countdown & Live Clock Component */
-.footer-countdown-wrap {
+/* Countdown & Live Clock Component */
+.footer-countdown-wrap,
+.countdown-wrap {
   max-width: 680px;
   margin: 0 auto 36px;
   background: linear-gradient(165deg, rgba(24, 18, 40, .85) 0%, rgba(12, 9, 22, .94) 100%);
@@ -1146,7 +1147,15 @@ footer p { margin: 12px 0; }
   transition: border-color .3s ease, box-shadow .3s ease;
 }
 
-.footer-countdown-wrap:hover {
+.hero-countdown {
+  margin: 24px auto 30px;
+  width: 100%;
+  max-width: 660px;
+  z-index: 2;
+}
+
+.footer-countdown-wrap:hover,
+.countdown-wrap:hover {
   border-color: rgba(247, 206, 122, .55);
   box-shadow: 0 25px 60px rgba(0, 0, 0, .7), 0 0 45px rgba(247, 206, 122, .2);
 }
@@ -1565,8 +1574,10 @@ footer p { margin: 12px 0; }
   .music-icon { font-size: 13px; }
   .equalizer-bars { height: 12px; width: 12px; }
 
-  /* Responsive Footer Countdown */
-  .footer-countdown-wrap { padding: 22px 14px 20px; margin-bottom: 28px; border-radius: 18px; }
+  /* Responsive Countdown */
+  .footer-countdown-wrap,
+  .countdown-wrap { padding: 22px 14px 20px; margin-bottom: 24px; border-radius: 18px; }
+  .hero-countdown { margin: 18px auto 24px; }
   .countdown-heading { font-size: 20px; }
   .countdown-desc { font-size: 12px; margin-bottom: 12px; }
   .target-date-row { font-size: 10.5px; gap: 8px; }
@@ -1594,6 +1605,7 @@ footer p { margin: 12px 0; }
   .music-toggle-btn .music-label { display: none; }
   .music-toggle-btn { padding: 9px; border-radius: 50%; }
 
+  .hero-countdown { margin: 14px auto 18px; }
   .timer-box { width: 50px; height: 52px; }
   .timer-val { font-size: 17px; }
   .countdown-timer-grid { gap: 3px; }
