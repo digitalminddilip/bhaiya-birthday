@@ -122,192 +122,69 @@ if(giftFrameEl){
 }
 
 // ==========================================
-// Birthday Rap Music & Audio Player System (Unified)
+// Background Music System (Looping Birthday Tune)
 // ==========================================
-const rapAudio = document.getElementById('rapAudio');
 const bgMusic = document.getElementById('bgMusic');
 const musicToggleBtn = document.getElementById('musicToggleBtn');
 const musicLabel = document.getElementById('musicLabel');
-
-// Rap Player UI elements in Make a Wish section
-const rapPlayerCard = document.getElementById('rapPlayerCard');
-const rapPlayBtn = document.getElementById('rapPlayBtn');
-const rapPlayIcon = document.getElementById('rapPlayIcon');
-const rapPlayText = document.getElementById('rapPlayText');
-const rapProgressTrack = document.getElementById('rapProgressTrack');
-const rapProgressFill = document.getElementById('rapProgressFill');
-const rapProgressThumb = document.getElementById('rapProgressThumb');
-const rapCurrentTime = document.getElementById('rapCurrentTime');
-const rapDuration = document.getElementById('rapDuration');
-const rapVolBtn = document.getElementById('rapVolBtn');
-const rapVolRange = document.getElementById('rapVolRange');
-const rapLyricsToggle = document.getElementById('rapLyricsToggle');
-const rapLyricsDrawer = document.getElementById('rapLyricsDrawer');
-
 let isMusicPlaying = false;
 let userHasInteracted = false;
 
-function formatAudioTime(secs){
-  if (isNaN(secs) || secs < 0) return '0:00';
-  const m = Math.floor(secs / 60);
-  const s = Math.floor(secs % 60);
-  return `${m}:${s < 10 ? '0' : ''}${s}`;
-}
-
-function syncPlayerUI(playing){
+function setMusicUI(playing){
   isMusicPlaying = playing;
-
-  if (rapPlayerCard) {
-    if (playing) rapPlayerCard.classList.add('is-playing');
-    else rapPlayerCard.classList.remove('is-playing');
-  }
-  if (rapPlayIcon) rapPlayIcon.textContent = playing ? '⏸' : '▶';
-  if (rapPlayText) rapPlayText.textContent = playing ? 'Pause Rap' : 'Play Rap Song';
-
-  // Synchronize floating music controller
   if (musicToggleBtn) {
     if (playing) {
       musicToggleBtn.classList.add('is-playing');
-      if (musicLabel) musicLabel.textContent = 'Rap: ON';
-      musicToggleBtn.setAttribute('title', 'Pause Birthday Rap Song');
+      if (musicLabel) musicLabel.textContent = 'Music: ON';
+      musicToggleBtn.setAttribute('title', 'Pause Birthday Music');
     } else {
       musicToggleBtn.classList.remove('is-playing');
-      if (musicLabel) musicLabel.textContent = 'Play Rap Song';
-      musicToggleBtn.setAttribute('title', 'Play Birthday Rap Song');
+      if (musicLabel) musicLabel.textContent = 'Play Music';
+      musicToggleBtn.setAttribute('title', 'Play Birthday Music');
     }
   }
 }
 
 function startMusic(){
-  playRapSong();
-}
-
-function pauseMusic(){
-  pauseRapSong();
-}
-
-function playRapSong(){
-  if (!rapAudio) return;
-  // If tone audio was running, stop it so vocal rap is clean
-  if (bgMusic && !bgMusic.paused) {
-    bgMusic.pause();
-  }
-
-  const promise = rapAudio.play();
+  if (!bgMusic) return;
+  bgMusic.volume = 0.6;
+  const promise = bgMusic.play();
   if (promise !== undefined) {
     promise.then(() => {
-      syncPlayerUI(true);
+      setMusicUI(true);
       removeInteractionListeners();
     }).catch(err => {
-      console.log('Audio autoplay prevented by browser policy:', err);
+      console.log('Audio autoplay prevented by browser policy, waiting for first interaction:', err);
     });
   }
 }
 
-function pauseRapSong(){
-  if (!rapAudio) return;
-  rapAudio.pause();
-  syncPlayerUI(false);
-}
-
-function toggleRapSong(){
-  if (rapAudio && !rapAudio.paused) {
-    pauseRapSong();
-  } else {
-    playRapSong();
-  }
+function pauseMusic(){
+  if (!bgMusic) return;
+  bgMusic.pause();
+  setMusicUI(false);
 }
 
 function toggleMusic(){
-  toggleRapSong();
-}
-
-// Attach event listeners for audio player
-if (rapPlayBtn) {
-  rapPlayBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    userHasInteracted = true;
-    toggleRapSong();
-  });
+  if (isMusicPlaying) {
+    pauseMusic();
+  } else {
+    startMusic();
+  }
 }
 
 if (musicToggleBtn) {
   musicToggleBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     userHasInteracted = true;
-    toggleRapSong();
+    toggleMusic();
   });
 }
 
-if (rapAudio) {
-  rapAudio.addEventListener('loadedmetadata', () => {
-    if (rapDuration) rapDuration.textContent = formatAudioTime(rapAudio.duration);
-  });
-  rapAudio.addEventListener('timeupdate', () => {
-    if (!rapAudio.duration) return;
-    const progress = (rapAudio.currentTime / rapAudio.duration) * 100;
-    if (rapProgressFill) rapProgressFill.style.width = progress + '%';
-    if (rapProgressThumb) rapProgressThumb.style.left = progress + '%';
-    if (rapCurrentTime) rapCurrentTime.textContent = formatAudioTime(rapAudio.currentTime);
-  });
-  rapAudio.addEventListener('play', () => syncPlayerUI(true));
-  rapAudio.addEventListener('pause', () => syncPlayerUI(false));
-  rapAudio.addEventListener('ended', () => {
-    syncPlayerUI(false);
-    if (rapProgressFill) rapProgressFill.style.width = '0%';
-    if (rapProgressThumb) rapProgressThumb.style.left = '0%';
-  });
-}
-
-if (rapProgressTrack) {
-  rapProgressTrack.addEventListener('click', (e) => {
-    if (!rapAudio || !rapAudio.duration) return;
-    const rect = rapProgressTrack.getBoundingClientRect();
-    const pos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-    rapAudio.currentTime = pos * rapAudio.duration;
-    if (rapAudio.paused) playRapSong();
-  });
-}
-
-if (rapVolRange && rapAudio) {
-  rapVolRange.addEventListener('input', (e) => {
-    rapAudio.volume = parseFloat(e.target.value);
-    if (rapVolBtn) {
-      rapVolBtn.textContent = rapAudio.volume === 0 ? '🔇' : (rapAudio.volume < 0.5 ? '🔉' : '🔊');
-    }
-  });
-}
-
-if (rapVolBtn && rapAudio) {
-  rapVolBtn.addEventListener('click', () => {
-    if (rapAudio.volume > 0) {
-      rapAudio.dataset.prevVol = rapAudio.volume;
-      rapAudio.volume = 0;
-      if (rapVolRange) rapVolRange.value = 0;
-      rapVolBtn.textContent = '🔇';
-    } else {
-      const prev = parseFloat(rapAudio.dataset.prevVol || '0.9');
-      rapAudio.volume = prev;
-      if (rapVolRange) rapVolRange.value = prev;
-      rapVolBtn.textContent = '🔊';
-    }
-  });
-}
-
-if (rapLyricsToggle && rapLyricsDrawer) {
-  rapLyricsToggle.addEventListener('click', () => {
-    rapLyricsDrawer.classList.toggle('open');
-    if (rapLyricsDrawer.classList.contains('open')) {
-      rapLyricsToggle.textContent = '📜 Hide Rap Lyrics';
-    } else {
-      rapLyricsToggle.textContent = '📜 View Rap Lyrics';
-    }
-  });
-}
-
-const interactionEvents = ['click','touchstart','pointerdown','keydown'];
+const interactionEvents = ['click', 'touchstart', 'pointerdown', 'scroll', 'keydown'];
 function onUserInteraction(){
-  if (!isMusicPlaying && userHasInteracted) {
+  if (!isMusicPlaying && !userHasInteracted) {
+    userHasInteracted = true;
     startMusic();
   }
 }
@@ -320,51 +197,42 @@ interactionEvents.forEach(evt => {
   window.addEventListener(evt, onUserInteraction, { passive: true });
 });
 
-document.getElementById('revealBtn').addEventListener('click', () => {
-  burst();
-  userHasInteracted = true;
-  if (!isMusicPlaying) startMusic();
-  const giftEl = document.getElementById('gift');
-  if (giftEl) {
-    giftEl.scrollIntoView({ behavior: 'smooth' });
-    setTimeout(() => {
-      openGift();
-    }, 500);
-  } else {
-    document.getElementById('message').scrollIntoView({ behavior: 'smooth' });
-  }
-  document.querySelectorAll('.letter').forEach((el, i) => {
-    el.classList.remove('reveal');
-    setTimeout(() => el.classList.add('reveal'), i * 180);
+const revealBtn = document.getElementById('revealBtn');
+if (revealBtn) {
+  revealBtn.addEventListener('click', () => {
+    burst();
+    userHasInteracted = true;
+    if (!isMusicPlaying) startMusic();
+    const giftEl = document.getElementById('gift');
+    if (giftEl) {
+      giftEl.scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => {
+        openGift();
+      }, 500);
+    } else {
+      document.getElementById('message').scrollIntoView({ behavior: 'smooth' });
+    }
+    document.querySelectorAll('.letter').forEach((el, i) => {
+      el.classList.remove('reveal');
+      setTimeout(() => el.classList.add('reveal'), i * 180);
+    });
   });
-});
+}
 
-// Make a Wish Button click -> triggers confetti, wish message, and plays the Birthday Rap Song!
-document.getElementById('celebrateBtn').addEventListener('click', () => {
-  burst();
-  setTimeout(() => burst(), 320);
-  userHasInteracted = true;
-
-  // Play the Hindi Rap Voice Song!
-  playRapSong();
-
-  // Open the lyrics drawer
-  if (rapLyricsDrawer) {
-    rapLyricsDrawer.classList.add('open');
-    if (rapLyricsToggle) rapLyricsToggle.textContent = '📜 Hide Rap Lyrics';
-  }
-
-  const el = document.getElementById('wishResult');
-  if (el) {
-    el.textContent = '✨ Wish activated! Happy Birthday Harishchandra Bhaiya! Playing your special rap song! ✨';
-    el.classList.add('reveal');
-  }
-
-  // Highlight and scroll to the Rap Player
-  if (rapPlayerCard) {
-    rapPlayerCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-});
+// Make a Wish Button click -> triggers confetti, wish message, and background music
+const celebrateBtn = document.getElementById('celebrateBtn');
+if (celebrateBtn) {
+  celebrateBtn.addEventListener('click', () => {
+    burst();
+    setTimeout(() => burst(), 320);
+    if (!isMusicPlaying) startMusic();
+    const el = document.getElementById('wishResult');
+    if (el) {
+      el.textContent = '✨ Wish activated! May every good thing find its way to you, Bhaiya. ✨';
+      el.classList.add('reveal');
+    }
+  });
+}
 
 // ==========================================
 // Midnight Countdown Popup Gate & Surprise Unlock
@@ -440,7 +308,9 @@ document.getElementById('celebrateBtn').addEventListener('click', () => {
       }
       document.body.classList.remove('modal-locked');
 
-      playRapSong();
+      if (typeof startMusic === 'function') {
+        startMusic();
+      }
 
       setTimeout(() => {
         if (modalOverlay) modalOverlay.style.display = 'none';
@@ -456,6 +326,9 @@ document.getElementById('celebrateBtn').addEventListener('click', () => {
       }, 750);
     }, 1200);
   }
+
+  // Expose for external triggers / testing
+  window.triggerUnlockAndSurprise = triggerUnlockAndSurprise;
 
   // Secret bypass for testing: double-click lock icon unlocks immediately
   if (modalLockIcon) {
