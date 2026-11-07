@@ -3,9 +3,89 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#090812"><meta name="description" content="A birthday surprise made with love and code for Harishchandra Sharma.">
-<title>Happy Birthday, Harishchandra Bhaiya!</title><link rel="stylesheet" href="style.css?v=12">
+<title>Happy Birthday, Harishchandra Bhaiya!</title><link rel="stylesheet" href="style.css?v=13">
 </head>
-<body>
+<body class="modal-locked">
+<!-- Midnight Countdown Gate Popup -->
+<div class="countdown-modal-overlay" id="countdownModalOverlay" role="dialog" aria-modal="true" aria-label="Birthday Surprise Countdown Gate">
+<div class="modal-backdrop-glow" aria-hidden="true"></div>
+<div class="modal-card glass">
+<div class="modal-badge">
+<span class="modal-lock-pulse" id="modalLockIcon">🔒</span>
+<span id="modalLockStatus">SURPRISE LOCKED UNTIL MIDNIGHT</span>
+</div>
+<h2 class="modal-title">Harishchandra Bhaiya's<br><span class="gradient">Birthday Surprise 🎁</span></h2>
+<p class="modal-subtitle" id="modalSubtitle">Wait for the countdown to hit zero — the main surprise and website will unlock automatically at 12:00 AM!</p>
+
+<div class="countdown-timer-grid modal-grid" id="modalTimerGrid">
+<div class="timer-block">
+<div class="timer-box">
+<span class="timer-val" id="mCdDays">00</span>
+<span class="timer-glow" aria-hidden="true"></span>
+</div>
+<span class="timer-tag">DAYS</span>
+</div>
+<div class="timer-sep" aria-hidden="true">:</div>
+<div class="timer-block">
+<div class="timer-box">
+<span class="timer-val" id="mCdHours">00</span>
+<span class="timer-glow" aria-hidden="true"></span>
+</div>
+<span class="timer-tag">HOURS</span>
+</div>
+<div class="timer-sep" aria-hidden="true">:</div>
+<div class="timer-block">
+<div class="timer-box">
+<span class="timer-val" id="mCdMins">00</span>
+<span class="timer-glow" aria-hidden="true"></span>
+</div>
+<span class="timer-tag">MINUTES</span>
+</div>
+<div class="timer-sep" aria-hidden="true">:</div>
+<div class="timer-block">
+<div class="timer-box">
+<span class="timer-val" id="mCdSecs">00</span>
+<span class="timer-glow" aria-hidden="true"></span>
+</div>
+<span class="timer-tag">SECONDS</span>
+</div>
+</div>
+
+<div class="modal-info-bar">
+<span class="modal-info-pill">
+🎯 <strong>Target:</strong> <span id="mTargetDisplay">08 November 2026, 12:00 AM</span>
+</span>
+<span class="modal-info-pill">
+⏰ <strong>Live:</strong> <span id="mLiveTimeDisplay">--:--:-- --</span>
+</span>
+</div>
+
+<div class="modal-actions-row">
+<button type="button" class="modal-btn-test" id="btnTestUnlock" title="Preview unlock animation immediately">
+⚡ Test Surprise Unlock Now
+</button>
+<button type="button" class="modal-btn-edit" id="btnModalEditDate" title="Change target countdown date">
+✏️ Change Date
+</button>
+</div>
+
+<div class="countdown-picker-drawer" id="modalPickerDrawer">
+<div class="picker-inner">
+<label for="mTargetDateInput">Select Custom Target Date &amp; Time:</label>
+<div class="picker-inputs">
+<input type="datetime-local" id="mTargetDateInput" class="date-input-field">
+<button type="button" class="picker-btn save" id="btnModalSaveDate">Apply</button>
+<button type="button" class="picker-btn reset" id="btnModalResetDate">Reset</button>
+</div>
+</div>
+</div>
+
+<div class="modal-footer-love">
+Crafted with code &amp; love by Dilip ❤️
+</div>
+</div>
+</div>
+
 <div class="stars" aria-hidden="true"></div><canvas id="confetti" aria-hidden="true"></canvas>
 <header class="top"><a class="brand" href="#home">&lt;Dilip<span>.dev</span> /&gt;</a><div class="top-tag">A little surprise, built with love ♥</div></header>
 <main>
@@ -199,5 +279,5 @@ print(birthday_wishes(<span class="green-text">"Harishchandra Sharma"</span>))</
 <span class="music-label" id="musicLabel">Play Music</span>
 </button>
 </div>
-<script src="script.js?v=12"></script>
+<script src="script.js?v=13"></script>
 </body></html>

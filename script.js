@@ -227,9 +227,9 @@ document.getElementById('celebrateBtn').addEventListener('click',()=>{
 });
 
 // ==========================================
-// Footer Date Countdown & Live Clock System
+// Midnight Countdown Popup Gate & Surprise Unlock
 // ==========================================
-(function initFooterCountdownAndClock(){
+(function initMidnightCountdownGate(){
   // Default Target Date: 08 November 2026, 12:00 AM (Can be customized via the UI "Change Date" button)
   const DEFAULT_TARGET_ISO = '2026-11-08T00:00:00';
 
@@ -250,6 +250,26 @@ document.getElementById('celebrateBtn').addEventListener('click',()=>{
 
   let currentTargetDate = getTargetDate();
 
+  // Modal elements
+  const modalOverlay = document.getElementById('countdownModalOverlay');
+  const modalLockIcon = document.getElementById('modalLockIcon');
+  const modalLockStatus = document.getElementById('modalLockStatus');
+  const modalSubtitle = document.getElementById('modalSubtitle');
+  const mTargetDisplay = document.getElementById('mTargetDisplay');
+  const mLiveTimeDisplay = document.getElementById('mLiveTimeDisplay');
+  const btnTestUnlock = document.getElementById('btnTestUnlock');
+  const btnModalEditDate = document.getElementById('btnModalEditDate');
+  const modalPickerDrawer = document.getElementById('modalPickerDrawer');
+  const mTargetDateInput = document.getElementById('mTargetDateInput');
+  const btnModalSaveDate = document.getElementById('btnModalSaveDate');
+  const btnModalResetDate = document.getElementById('btnModalResetDate');
+
+  const mCdDays = document.getElementById('mCdDays');
+  const mCdHours = document.getElementById('mCdHours');
+  const mCdMins = document.getElementById('mCdMins');
+  const mCdSecs = document.getElementById('mCdSecs');
+
+  // Page countdown elements
   const cdDays = document.getElementById('cdDays');
   const cdHours = document.getElementById('cdHours');
   const cdMins = document.getElementById('cdMins');
@@ -277,59 +297,107 @@ document.getElementById('celebrateBtn').addEventListener('click',()=>{
     });
   }
 
-  function updateTargetDisplay(){
-    if (targetDateDisplay) {
-      targetDateDisplay.textContent = formatDateTimeNice(currentTargetDate);
-    }
-    if (targetDateInput) {
-      const pad = (n) => String(n).padStart(2, '0');
-      const localISO = `${currentTargetDate.getFullYear()}-${pad(currentTargetDate.getMonth() + 1)}-${pad(currentTargetDate.getDate())}T${pad(currentTargetDate.getHours())}:${pad(currentTargetDate.getMinutes())}`;
-      targetDateInput.value = localISO;
-    }
+  function updateTargetDisplays(){
+    const formatted = formatDateTimeNice(currentTargetDate);
+    if (mTargetDisplay) mTargetDisplay.textContent = formatted;
+    if (targetDateDisplay) targetDateDisplay.textContent = formatted;
+
+    const pad = (n) => String(n).padStart(2, '0');
+    const localISO = `${currentTargetDate.getFullYear()}-${pad(currentTargetDate.getMonth() + 1)}-${pad(currentTargetDate.getDate())}T${pad(currentTargetDate.getHours())}:${pad(currentTargetDate.getMinutes())}`;
+    if (mTargetDateInput) mTargetDateInput.value = localISO;
+    if (targetDateInput) targetDateInput.value = localISO;
   }
 
-  let hasTriggeredArrivalBurst = false;
+  let isUnlocked = false;
 
-  function updateClockAndCountdown(){
+  function triggerUnlockAndSurprise(){
+    if (isUnlocked) return;
+    isUnlocked = true;
+
+    // 1. Update Modal Visuals to Celebration
+    if (modalLockIcon) modalLockIcon.textContent = '🎉';
+    if (modalLockStatus) modalLockStatus.textContent = "IT'S CELEBRATION TIME!";
+    if (modalSubtitle) {
+      modalSubtitle.innerHTML = '<strong style="color:#f7ce7a;font-size:16px;">Happy Birthday, Harishchandra Bhaiya! ❤️</strong><br>Unlocking your surprise gift right now...';
+    }
+
+    if (typeof playGiftChime === 'function') playGiftChime();
+    if (typeof burst === 'function') {
+      burst();
+      setTimeout(() => burst(), 300);
+    }
+
+    // 2. Animate and remove modal
+    setTimeout(() => {
+      if (modalOverlay) {
+        modalOverlay.classList.add('unlocking');
+      }
+      document.body.classList.remove('modal-locked');
+
+      if (typeof startMusic === 'function') startMusic();
+
+      setTimeout(() => {
+        if (modalOverlay) modalOverlay.style.display = 'none';
+
+        // 3. Scroll to surprise gift section and open gift automatically!
+        const giftSection = document.getElementById('gift');
+        if (giftSection) {
+          giftSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        setTimeout(() => {
+          if (typeof openGift === 'function') openGift();
+        }, 550);
+      }, 750);
+    }, 1200);
+  }
+
+  function updateTick(){
     const now = new Date();
+    const liveTimeStr = now.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    });
+    const liveDateStr = now.toLocaleDateString('en-US', {
+      weekday: 'short',
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
 
-    // 1. Live Current Time & Date Clock
-    if (liveTimeText) {
-      liveTimeText.textContent = now.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true
-      });
-    }
+    if (mLiveTimeDisplay) mLiveTimeDisplay.textContent = liveTimeStr;
+    if (liveTimeText) liveTimeText.textContent = liveTimeStr;
+    if (liveDateText) liveDateText.textContent = liveDateStr;
 
-    if (liveDateText) {
-      liveDateText.textContent = now.toLocaleDateString('en-US', {
-        weekday: 'short',
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric'
-      });
-    }
-
-    // 2. Countdown Calculation
     const diff = currentTargetDate.getTime() - now.getTime();
 
     if (diff <= 0) {
-      // Countdown reached or celebration day
-      if (cdDays) cdDays.textContent = '00';
-      if (cdHours) cdHours.textContent = '00';
-      if (cdMins) cdMins.textContent = '00';
-      if (cdSecs) cdSecs.textContent = '00';
+      // Reached 00:00:00:00!
+      const zeroes = '00';
+      if (mCdDays) mCdDays.textContent = zeroes;
+      if (mCdHours) mCdHours.textContent = zeroes;
+      if (mCdMins) mCdMins.textContent = zeroes;
+      if (mCdSecs) mCdSecs.textContent = zeroes;
+
+      if (cdDays) cdDays.textContent = zeroes;
+      if (cdHours) cdHours.textContent = zeroes;
+      if (cdMins) cdMins.textContent = zeroes;
+      if (cdSecs) cdSecs.textContent = zeroes;
 
       if (celebrationBanner) celebrationBanner.style.display = 'block';
       if (countdownStatusText) countdownStatusText.textContent = "🎉 IT'S CELEBRATION TIME!";
 
-      if (!hasTriggeredArrivalBurst) {
-        hasTriggeredArrivalBurst = true;
-        if (typeof burst === 'function') burst();
+      if (!isUnlocked) {
+        triggerUnlockAndSurprise();
       }
     } else {
+      // Still locked in countdown popup
+      if (!isUnlocked && modalOverlay && modalOverlay.style.display !== 'none') {
+        document.body.classList.add('modal-locked');
+      }
+
       if (celebrationBanner) celebrationBanner.style.display = 'none';
       if (countdownStatusText) countdownStatusText.textContent = 'LIVE COUNTDOWN';
 
@@ -339,19 +407,73 @@ document.getElementById('celebrateBtn').addEventListener('click',()=>{
       const seconds = Math.floor((diff / 1000) % 60);
 
       const pad = (n) => String(n).padStart(2, '0');
-      if (cdDays) cdDays.textContent = pad(days);
-      if (cdHours) cdHours.textContent = pad(hours);
-      if (cdMins) cdMins.textContent = pad(minutes);
-      if (cdSecs) cdSecs.textContent = pad(seconds);
+      const dStr = pad(days), hStr = pad(hours), mStr = pad(minutes), sStr = pad(seconds);
+
+      if (mCdDays) mCdDays.textContent = dStr;
+      if (mCdHours) mCdHours.textContent = hStr;
+      if (mCdMins) mCdMins.textContent = mStr;
+      if (mCdSecs) mCdSecs.textContent = sStr;
+
+      if (cdDays) cdDays.textContent = dStr;
+      if (cdHours) cdHours.textContent = hStr;
+      if (cdMins) cdMins.textContent = mStr;
+      if (cdSecs) cdSecs.textContent = sStr;
     }
   }
 
-  // Interactive controls
+  // Interactive controls for modal
+  if (btnTestUnlock) {
+    btnTestUnlock.addEventListener('click', () => {
+      triggerUnlockAndSurprise();
+    });
+  }
+
+  if (btnModalEditDate) {
+    btnModalEditDate.addEventListener('click', () => {
+      if (modalPickerDrawer) modalPickerDrawer.classList.toggle('open');
+    });
+  }
+
+  if (btnModalSaveDate) {
+    btnModalSaveDate.addEventListener('click', () => {
+      if (!mTargetDateInput || !mTargetDateInput.value) return;
+      const selected = new Date(mTargetDateInput.value);
+      if (!isNaN(selected.getTime())) {
+        currentTargetDate = selected;
+        localStorage.setItem('bhaiya_target_date_v2', selected.toISOString());
+        updateTargetDisplays();
+        isUnlocked = false;
+        if (modalOverlay) {
+          modalOverlay.style.display = 'flex';
+          modalOverlay.classList.remove('unlocking');
+          document.body.classList.add('modal-locked');
+        }
+        if (modalPickerDrawer) modalPickerDrawer.classList.remove('open');
+        updateTick();
+      }
+    });
+  }
+
+  if (btnModalResetDate) {
+    btnModalResetDate.addEventListener('click', () => {
+      localStorage.removeItem('bhaiya_target_date_v2');
+      currentTargetDate = new Date(DEFAULT_TARGET_ISO);
+      updateTargetDisplays();
+      isUnlocked = false;
+      if (modalOverlay) {
+        modalOverlay.style.display = 'flex';
+        modalOverlay.classList.remove('unlocking');
+        document.body.classList.add('modal-locked');
+      }
+      if (modalPickerDrawer) modalPickerDrawer.classList.remove('open');
+      updateTick();
+    });
+  }
+
+  // Page countdown controls (if modified on page)
   if (btnDateToggle) {
     btnDateToggle.addEventListener('click', () => {
-      if (countdownPickerDrawer) {
-        countdownPickerDrawer.classList.toggle('open');
-      }
+      if (countdownPickerDrawer) countdownPickerDrawer.classList.toggle('open');
     });
   }
 
@@ -362,9 +484,9 @@ document.getElementById('celebrateBtn').addEventListener('click',()=>{
       if (!isNaN(selected.getTime())) {
         currentTargetDate = selected;
         localStorage.setItem('bhaiya_target_date_v2', selected.toISOString());
-        updateTargetDisplay();
-        hasTriggeredArrivalBurst = false;
-        updateClockAndCountdown();
+        updateTargetDisplays();
+        isUnlocked = false;
+        updateTick();
         if (countdownPickerDrawer) countdownPickerDrawer.classList.remove('open');
       }
     });
@@ -374,9 +496,9 @@ document.getElementById('celebrateBtn').addEventListener('click',()=>{
     btnResetTargetDate.addEventListener('click', () => {
       localStorage.removeItem('bhaiya_target_date_v2');
       currentTargetDate = new Date(DEFAULT_TARGET_ISO);
-      updateTargetDisplay();
-      hasTriggeredArrivalBurst = false;
-      updateClockAndCountdown();
+      updateTargetDisplays();
+      isUnlocked = false;
+      updateTick();
       if (countdownPickerDrawer) countdownPickerDrawer.classList.remove('open');
     });
   }
@@ -390,7 +512,7 @@ document.getElementById('celebrateBtn').addEventListener('click',()=>{
     });
   }
 
-  updateTargetDisplay();
-  updateClockAndCountdown();
-  setInterval(updateClockAndCountdown, 1000);
+  updateTargetDisplays();
+  updateTick();
+  setInterval(updateTick, 1000);
 })();
