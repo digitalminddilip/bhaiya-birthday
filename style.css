@@ -1123,12 +1123,363 @@ h1 {
 footer {
   text-align: center;
   border-top: 1px solid rgba(255, 255, 255, .1);
-  padding: 36px 20px 44px;
+  padding: 44px 20px 52px;
   color: var(--muted);
   font-size: 12px;
+  position: relative;
 }
 footer p { margin: 12px 0; }
 .footer-small { font: 10px 'DM Mono', monospace; letter-spacing: .5px; }
+
+/* Footer Countdown & Live Clock Component */
+.footer-countdown-wrap {
+  max-width: 680px;
+  margin: 0 auto 36px;
+  background: linear-gradient(165deg, rgba(24, 18, 40, .85) 0%, rgba(12, 9, 22, .94) 100%);
+  border: 1.5px solid rgba(247, 206, 122, .32);
+  border-radius: 24px;
+  padding: 30px 24px 26px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .6), 0 0 35px rgba(247, 206, 122, .12);
+  position: relative;
+  text-align: center;
+  transition: border-color .3s ease, box-shadow .3s ease;
+}
+
+.footer-countdown-wrap:hover {
+  border-color: rgba(247, 206, 122, .55);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, .7), 0 0 45px rgba(247, 206, 122, .2);
+}
+
+.countdown-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 14px;
+  border-radius: 99px;
+  background: rgba(156, 255, 193, .12);
+  border: 1px solid rgba(156, 255, 193, .4);
+  color: #9cffc1;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  margin-bottom: 12px;
+}
+
+.countdown-badge .live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #9cffc1;
+  box-shadow: 0 0 8px #9cffc1;
+  animation: pulse 1.5s infinite;
+}
+
+.countdown-heading {
+  font-size: 24px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -.02em;
+  margin: 0 0 6px;
+}
+
+.countdown-desc {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0 0 16px;
+}
+
+.target-date-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-family: 'DM Mono', monospace;
+  font-size: 11.5px;
+  color: #dfdaec;
+  margin-bottom: 18px;
+}
+
+.target-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.target-info strong {
+  color: var(--gold);
+}
+
+.btn-date-toggle {
+  background: rgba(247, 206, 122, .1);
+  border: 1px solid rgba(247, 206, 122, .38);
+  color: var(--gold);
+  border-radius: 99px;
+  padding: 4px 12px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.btn-date-toggle:hover {
+  background: rgba(247, 206, 122, .22);
+  border-color: var(--gold);
+  transform: translateY(-1px);
+}
+
+.countdown-picker-drawer {
+  display: none;
+  background: rgba(9, 8, 18, .92);
+  border: 1px solid rgba(247, 206, 122, .28);
+  border-radius: 14px;
+  padding: 14px;
+  margin: 0 auto 18px;
+  max-width: 440px;
+  animation: reveal .3s ease;
+}
+
+.countdown-picker-drawer.open {
+  display: block;
+}
+
+.picker-inner label {
+  display: block;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: #dfdaec;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.picker-inputs {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.date-input-field {
+  flex: 1;
+  min-width: 190px;
+  background: rgba(255, 255, 255, .08);
+  border: 1px solid rgba(247, 206, 122, .35);
+  border-radius: 8px;
+  padding: 7px 10px;
+  color: #fff;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  outline: none;
+  color-scheme: dark;
+}
+
+.date-input-field:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 10px rgba(247, 206, 122, .3);
+}
+
+.picker-btn {
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all .2s ease;
+}
+
+.picker-btn.save {
+  background: var(--gold);
+  color: #120e1e;
+}
+
+.picker-btn.save:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.picker-btn.reset {
+  background: rgba(255, 255, 255, .1);
+  border: 1px solid rgba(255, 255, 255, .2);
+  color: #dfdaec;
+}
+
+.picker-btn.reset:hover {
+  background: rgba(255, 255, 255, .18);
+}
+
+/* Digits Grid */
+.countdown-timer-grid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 18px 0 24px;
+}
+
+.timer-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+}
+
+.timer-box {
+  position: relative;
+  width: 78px;
+  height: 78px;
+  background: linear-gradient(145deg, rgba(30, 24, 52, .95) 0%, rgba(14, 10, 24, .98) 100%);
+  border: 1.5px solid rgba(247, 206, 122, .42);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, .55), inset 0 1px 0 rgba(255, 255, 255, .15);
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+.timer-box:hover {
+  transform: translateY(-2px);
+  border-color: var(--gold);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, .65), 0 0 20px rgba(247, 206, 122, .25);
+}
+
+.timer-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 32px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ffffff 15%, #f7ce7a 75%, #ff8bc7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+  text-shadow: 0 2px 12px rgba(247, 206, 122, .25);
+}
+
+.timer-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: #aaa6bd;
+  letter-spacing: 1.4px;
+}
+
+.timer-sep {
+  font-family: 'DM Mono', monospace;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 22px;
+  animation: sepPulse 1.2s ease-in-out infinite alternate;
+  user-select: none;
+}
+
+@keyframes sepPulse {
+  0% { opacity: .4; transform: scale(.95); }
+  100% { opacity: 1; transform: scale(1.05); }
+}
+
+/* Celebration Banner */
+.celebration-banner {
+  background: linear-gradient(135deg, rgba(247, 206, 122, .15) 0%, rgba(255, 139, 199, .15) 100%);
+  border: 1.5px solid rgba(247, 206, 122, .55);
+  border-radius: 16px;
+  padding: 20px 16px;
+  margin: 16px auto 22px;
+  max-width: 520px;
+  animation: reveal .6s ease;
+}
+
+.celebration-badge-gold {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 99px;
+  background: var(--gold);
+  color: #120e1e;
+  font-family: 'DM Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .8px;
+  margin-bottom: 8px;
+}
+
+.celebration-banner h4 {
+  font-size: 18px;
+  color: #fff;
+  margin: 6px 0 8px;
+}
+
+.celebration-banner p {
+  font-size: 13px;
+  color: #dfdaec;
+  margin: 0 0 14px !important;
+}
+
+.celebration-trigger-btn {
+  padding: 10px 20px !important;
+  font-size: 10.5px !important;
+  display: inline-flex !important;
+  margin: 0 auto;
+}
+
+/* Real-time Live Clock & Date Bar */
+.live-clock-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px dashed rgba(255, 255, 255, .12);
+}
+
+.live-clock-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, .05);
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 99px;
+  padding: 6px 14px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: #dfdaec;
+  transition: all .2s ease;
+}
+
+.live-clock-chip:hover {
+  background: rgba(255, 255, 255, .09);
+  border-color: rgba(247, 206, 122, .3);
+}
+
+.chip-pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #9cffc1;
+  box-shadow: 0 0 6px #9cffc1;
+  animation: pulse 1.5s infinite;
+}
+
+.chip-icon {
+  font-size: 12px;
+}
+
+.chip-text {
+  font-weight: 500;
+  letter-spacing: .4px;
+}
+
+.footer-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .12), transparent);
+  margin: 28px 0 24px;
+}
 
 /* Animations */
 @keyframes twinkle { to { opacity: .24; } }
@@ -1214,6 +1565,19 @@ footer p { margin: 12px 0; }
   .music-icon { font-size: 13px; }
   .equalizer-bars { height: 12px; width: 12px; }
 
+  /* Responsive Footer Countdown */
+  .footer-countdown-wrap { padding: 22px 14px 20px; margin-bottom: 28px; border-radius: 18px; }
+  .countdown-heading { font-size: 20px; }
+  .countdown-desc { font-size: 12px; margin-bottom: 12px; }
+  .target-date-row { font-size: 10.5px; gap: 8px; }
+  .countdown-timer-grid { gap: 6px; margin: 14px 0 18px; }
+  .timer-box { width: 62px; height: 64px; border-radius: 12px; }
+  .timer-val { font-size: 23px; }
+  .timer-tag { font-size: 8.5px; letter-spacing: 1px; }
+  .timer-sep { font-size: 20px; margin-bottom: 18px; }
+  .live-clock-bar { gap: 8px; margin-top: 14px; padding-top: 14px; }
+  .live-clock-chip { font-size: 10px; padding: 5px 11px; }
+
   footer { padding: 26px 16px 36px; font-size: 11px; }
   .footer-small { font-size: 9px; }
 }
@@ -1229,6 +1593,14 @@ footer p { margin: 12px 0; }
   .gift-img-frame { max-height: 330px; }
   .music-toggle-btn .music-label { display: none; }
   .music-toggle-btn { padding: 9px; border-radius: 50%; }
+
+  .timer-box { width: 50px; height: 52px; }
+  .timer-val { font-size: 17px; }
+  .countdown-timer-grid { gap: 3px; }
+  .timer-sep { font-size: 15px; margin-bottom: 15px; }
+  .timer-tag { font-size: 7px; letter-spacing: .5px; }
+  .target-date-row { font-size: 9px; }
+  .btn-date-toggle { font-size: 9px; padding: 3px 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

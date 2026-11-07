@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#090812"><meta name="description" content="A birthday surprise made with love and code for Harishchandra Sharma.">
-<title>Happy Birthday, Harishchandra Bhaiya!</title><link rel="stylesheet" href="style.css?v=9">
+<title>Happy Birthday, Harishchandra Bhaiya!</title><link rel="stylesheet" href="style.css?v=11">
 </head>
 <body>
 <div class="stars" aria-hidden="true"></div><canvas id="confetti" aria-hidden="true"></canvas>
@@ -104,7 +104,87 @@ print(birthday_wishes(<span class="green-text">"Harishchandra Sharma"</span>))</
 </div>
 </section>
 </main>
-<footer><div class="brand">&lt;Dilip<span>.dev</span> /&gt;</div><p>Designed with code. Made with love.</p><p class="footer-small">For Harishchandra Sharma · Happy Birthday, Bhaiya ❤️</p></footer>
+<footer>
+<div class="footer-countdown-wrap" id="footerCountdown">
+<div class="countdown-badge">
+<span class="live-dot" aria-hidden="true"></span>
+<span id="countdownStatusText">COUNTDOWN TO CELEBRATION</span>
+</div>
+<h3 class="countdown-heading">Birthday Celebration <span class="gradient">Countdown</span> ⏳</h3>
+<p class="countdown-desc" id="countdownDesc">Counting every second to Harishchandra Bhaiya's special day!</p>
+<div class="target-date-row">
+<span class="target-info">
+<span class="target-icon">🎯</span>
+<span>Target: <strong id="targetDateDisplay">08 November 2026, 12:00 AM</strong></span>
+</span>
+<button type="button" class="btn-date-toggle" id="btnDateToggle" aria-label="Change target date" title="Change target date">✏️ Change Date</button>
+</div>
+<div class="countdown-picker-drawer" id="countdownPickerDrawer">
+<div class="picker-inner">
+<label for="targetDateInput">Select Date &amp; Time:</label>
+<div class="picker-inputs">
+<input type="datetime-local" id="targetDateInput" class="date-input-field">
+<button type="button" class="picker-btn save" id="btnSaveTargetDate">Apply</button>
+<button type="button" class="picker-btn reset" id="btnResetTargetDate">Reset</button>
+</div>
+</div>
+</div>
+<div class="countdown-timer-grid" id="countdownTimerGrid">
+<div class="timer-block">
+<div class="timer-box">
+<span class="timer-val" id="cdDays">00</span>
+<span class="timer-glow" aria-hidden="true"></span>
+</div>
+<span class="timer-tag">DAYS</span>
+</div>
+<div class="timer-sep" aria-hidden="true">:</div>
+<div class="timer-block">
+<div class="timer-box">
+<span class="timer-val" id="cdHours">00</span>
+<span class="timer-glow" aria-hidden="true"></span>
+</div>
+<span class="timer-tag">HOURS</span>
+</div>
+<div class="timer-sep" aria-hidden="true">:</div>
+<div class="timer-block">
+<div class="timer-box">
+<span class="timer-val" id="cdMins">00</span>
+<span class="timer-glow" aria-hidden="true"></span>
+</div>
+<span class="timer-tag">MINUTES</span>
+</div>
+<div class="timer-sep" aria-hidden="true">:</div>
+<div class="timer-block">
+<div class="timer-box">
+<span class="timer-val" id="cdSecs">00</span>
+<span class="timer-glow" aria-hidden="true"></span>
+</div>
+<span class="timer-tag">SECONDS</span>
+</div>
+</div>
+<div class="celebration-banner" id="celebrationBanner" style="display:none;">
+<div class="celebration-badge-gold">🎉 IT'S CELEBRATION TIME! 🎂</div>
+<h4>Happy Birthday, Harishchandra Bhaiya! ❤️</h4>
+<p>The wait is over! Wishing you limitless smiles, prosperity, and glory!</p>
+<button type="button" class="primary celebration-trigger-btn" id="cdConfettiBtn">SHOWER CONFETTI 🎊</button>
+</div>
+<div class="live-clock-bar">
+<div class="live-clock-chip">
+<span class="chip-pulse-dot" aria-hidden="true"></span>
+<span class="chip-icon">📅</span>
+<span class="chip-text" id="liveDateText">--</span>
+</div>
+<div class="live-clock-chip">
+<span class="chip-icon">⏰</span>
+<span class="chip-text" id="liveTimeText">--:--:-- --</span>
+</div>
+</div>
+</div>
+<div class="footer-divider" aria-hidden="true"></div>
+<div class="brand">&lt;Dilip<span>.dev</span> /&gt;</div>
+<p>Designed with code. Made with love.</p>
+<p class="footer-small">For Harishchandra Sharma · Happy Birthday, Bhaiya ❤️</p>
+</footer>
 <audio id="bgMusic" src="assets/birthday-music.wav" loop preload="auto" autoplay></audio>
 <div class="music-controller" id="musicController" aria-label="Music Player">
 <button class="music-toggle-btn" id="musicToggleBtn" type="button" aria-label="Play or pause background music" title="Play / Pause Birthday Music">
@@ -118,5 +198,5 @@ print(birthday_wishes(<span class="green-text">"Harishchandra Sharma"</span>))</
 <span class="music-label" id="musicLabel">Play Music</span>
 </button>
 </div>
-<script src="script.js?v=9"></script>
+<script src="script.js?v=11"></script>
 </body></html>

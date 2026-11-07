@@ -225,3 +225,172 @@ document.getElementById('celebrateBtn').addEventListener('click',()=>{
   el.textContent='✨ Wish activated! May every good thing find its way to you, Bhaiya. ✨';
   el.classList.add('reveal');
 });
+
+// ==========================================
+// Footer Date Countdown & Live Clock System
+// ==========================================
+(function initFooterCountdownAndClock(){
+  // Default Target Date: 08 November 2026, 12:00 AM (Can be customized via the UI "Change Date" button)
+  const DEFAULT_TARGET_ISO = '2026-11-08T00:00:00';
+
+  function getTargetDate(){
+    const stored = localStorage.getItem('bhaiya_target_date_v2');
+    if (stored) {
+      const parsed = new Date(stored);
+      if (!isNaN(parsed.getTime())) return parsed;
+    }
+    const defaultDate = new Date(DEFAULT_TARGET_ISO);
+    const now = new Date();
+    // If default target date has passed by more than 2 days and no saved date, roll over to next year
+    if (now.getTime() - defaultDate.getTime() > 2 * 24 * 60 * 60 * 1000) {
+      return new Date(now.getFullYear() + 1, defaultDate.getMonth(), defaultDate.getDate(), defaultDate.getHours(), defaultDate.getMinutes());
+    }
+    return defaultDate;
+  }
+
+  let currentTargetDate = getTargetDate();
+
+  const cdDays = document.getElementById('cdDays');
+  const cdHours = document.getElementById('cdHours');
+  const cdMins = document.getElementById('cdMins');
+  const cdSecs = document.getElementById('cdSecs');
+  const liveDateText = document.getElementById('liveDateText');
+  const liveTimeText = document.getElementById('liveTimeText');
+  const targetDateDisplay = document.getElementById('targetDateDisplay');
+  const countdownStatusText = document.getElementById('countdownStatusText');
+  const celebrationBanner = document.getElementById('celebrationBanner');
+  const btnDateToggle = document.getElementById('btnDateToggle');
+  const countdownPickerDrawer = document.getElementById('countdownPickerDrawer');
+  const targetDateInput = document.getElementById('targetDateInput');
+  const btnSaveTargetDate = document.getElementById('btnSaveTargetDate');
+  const btnResetTargetDate = document.getElementById('btnResetTargetDate');
+  const cdConfettiBtn = document.getElementById('cdConfettiBtn');
+
+  function formatDateTimeNice(date){
+    return date.toLocaleString('en-US', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  }
+
+  function updateTargetDisplay(){
+    if (targetDateDisplay) {
+      targetDateDisplay.textContent = formatDateTimeNice(currentTargetDate);
+    }
+    if (targetDateInput) {
+      const pad = (n) => String(n).padStart(2, '0');
+      const localISO = `${currentTargetDate.getFullYear()}-${pad(currentTargetDate.getMonth() + 1)}-${pad(currentTargetDate.getDate())}T${pad(currentTargetDate.getHours())}:${pad(currentTargetDate.getMinutes())}`;
+      targetDateInput.value = localISO;
+    }
+  }
+
+  let hasTriggeredArrivalBurst = false;
+
+  function updateClockAndCountdown(){
+    const now = new Date();
+
+    // 1. Live Current Time & Date Clock
+    if (liveTimeText) {
+      liveTimeText.textContent = now.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      });
+    }
+
+    if (liveDateText) {
+      liveDateText.textContent = now.toLocaleDateString('en-US', {
+        weekday: 'short',
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      });
+    }
+
+    // 2. Countdown Calculation
+    const diff = currentTargetDate.getTime() - now.getTime();
+
+    if (diff <= 0) {
+      // Countdown reached or celebration day
+      if (cdDays) cdDays.textContent = '00';
+      if (cdHours) cdHours.textContent = '00';
+      if (cdMins) cdMins.textContent = '00';
+      if (cdSecs) cdSecs.textContent = '00';
+
+      if (celebrationBanner) celebrationBanner.style.display = 'block';
+      if (countdownStatusText) countdownStatusText.textContent = "🎉 IT'S CELEBRATION TIME!";
+
+      if (!hasTriggeredArrivalBurst) {
+        hasTriggeredArrivalBurst = true;
+        if (typeof burst === 'function') burst();
+      }
+    } else {
+      if (celebrationBanner) celebrationBanner.style.display = 'none';
+      if (countdownStatusText) countdownStatusText.textContent = 'LIVE COUNTDOWN';
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      const pad = (n) => String(n).padStart(2, '0');
+      if (cdDays) cdDays.textContent = pad(days);
+      if (cdHours) cdHours.textContent = pad(hours);
+      if (cdMins) cdMins.textContent = pad(minutes);
+      if (cdSecs) cdSecs.textContent = pad(seconds);
+    }
+  }
+
+  // Interactive controls
+  if (btnDateToggle) {
+    btnDateToggle.addEventListener('click', () => {
+      if (countdownPickerDrawer) {
+        countdownPickerDrawer.classList.toggle('open');
+      }
+    });
+  }
+
+  if (btnSaveTargetDate) {
+    btnSaveTargetDate.addEventListener('click', () => {
+      if (!targetDateInput || !targetDateInput.value) return;
+      const selected = new Date(targetDateInput.value);
+      if (!isNaN(selected.getTime())) {
+        currentTargetDate = selected;
+        localStorage.setItem('bhaiya_target_date_v2', selected.toISOString());
+        updateTargetDisplay();
+        hasTriggeredArrivalBurst = false;
+        updateClockAndCountdown();
+        if (countdownPickerDrawer) countdownPickerDrawer.classList.remove('open');
+      }
+    });
+  }
+
+  if (btnResetTargetDate) {
+    btnResetTargetDate.addEventListener('click', () => {
+      localStorage.removeItem('bhaiya_target_date_v2');
+      currentTargetDate = new Date(DEFAULT_TARGET_ISO);
+      updateTargetDisplay();
+      hasTriggeredArrivalBurst = false;
+      updateClockAndCountdown();
+      if (countdownPickerDrawer) countdownPickerDrawer.classList.remove('open');
+    });
+  }
+
+  if (cdConfettiBtn) {
+    cdConfettiBtn.addEventListener('click', () => {
+      if (typeof burst === 'function') {
+        burst();
+        setTimeout(() => burst(), 300);
+      }
+    });
+  }
+
+  updateTargetDisplay();
+  updateClockAndCountdown();
+  setInterval(updateClockAndCountdown, 1000);
+})();
