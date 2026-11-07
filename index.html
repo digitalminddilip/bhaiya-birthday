@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#090812"><meta name="description" content="A birthday surprise made with love and code for Harishchandra Sharma.">
-<title>Happy Birthday, Harishchandra Bhaiya!</title><link rel="stylesheet" href="style.css?v=13">
+<title>Happy Birthday, Harishchandra Bhaiya!</title><link rel="stylesheet" href="style.css?v=14">
 </head>
 <body class="modal-locked">
 <!-- Midnight Countdown Gate Popup -->
@@ -15,7 +15,7 @@
 <span id="modalLockStatus">SURPRISE LOCKED UNTIL MIDNIGHT</span>
 </div>
 <h2 class="modal-title">Harishchandra Bhaiya's<br><span class="gradient">Birthday Surprise 🎁</span></h2>
-<p class="modal-subtitle" id="modalSubtitle">Wait for the countdown to hit zero — the main surprise and website will unlock automatically at 12:00 AM!</p>
+<p class="modal-subtitle" id="modalSubtitle">Wait for the countdown to hit zero — the main surprise will unlock automatically at 12:00 AM!</p>
 
 <div class="countdown-timer-grid modal-grid" id="modalTimerGrid">
 <div class="timer-block">
@@ -60,26 +60,6 @@
 </span>
 </div>
 
-<div class="modal-actions-row">
-<button type="button" class="modal-btn-test" id="btnTestUnlock" title="Preview unlock animation immediately">
-⚡ Test Surprise Unlock Now
-</button>
-<button type="button" class="modal-btn-edit" id="btnModalEditDate" title="Change target countdown date">
-✏️ Change Date
-</button>
-</div>
-
-<div class="countdown-picker-drawer" id="modalPickerDrawer">
-<div class="picker-inner">
-<label for="mTargetDateInput">Select Custom Target Date &amp; Time:</label>
-<div class="picker-inputs">
-<input type="datetime-local" id="mTargetDateInput" class="date-input-field">
-<button type="button" class="picker-btn save" id="btnModalSaveDate">Apply</button>
-<button type="button" class="picker-btn reset" id="btnModalResetDate">Reset</button>
-</div>
-</div>
-</div>
-
 <div class="modal-footer-love">
 Crafted with code &amp; love by Dilip ❤️
 </div>
@@ -95,84 +75,10 @@ Crafted with code &amp; love by Dilip ❤️
 <p class="tinyline">Compiling memories <span class="gold">•••</span> Loading happiness <span class="gold">•••</span> Ready to celebrate</p>
 <h1>HAPPY BIRTHDAY<br><span class="gradient">HARISHCHANDRA</span><br><span class="bhaiya">BHAIYA! <span class="heart">♥</span></span></h1>
 <p class="subtitle">A small website for a big place in my life.</p>
-
-<div class="countdown-wrap hero-countdown" id="footerCountdown">
-<div class="countdown-badge">
-<span class="live-dot" aria-hidden="true"></span>
-<span id="countdownStatusText">COUNTDOWN TO CELEBRATION</span>
-</div>
-<h3 class="countdown-heading">Birthday Celebration <span class="gradient">Countdown</span> ⏳</h3>
-<p class="countdown-desc" id="countdownDesc">Counting every second to Harishchandra Bhaiya's special day!</p>
-<div class="target-date-row">
-<span class="target-info">
-<span class="target-icon">🎯</span>
-<span>Target: <strong id="targetDateDisplay">08 November 2026, 12:00 AM</strong></span>
-</span>
-<button type="button" class="btn-date-toggle" id="btnDateToggle" aria-label="Change target date" title="Change target date">✏️ Change Date</button>
-</div>
-<div class="countdown-picker-drawer" id="countdownPickerDrawer">
-<div class="picker-inner">
-<label for="targetDateInput">Select Date &amp; Time:</label>
-<div class="picker-inputs">
-<input type="datetime-local" id="targetDateInput" class="date-input-field">
-<button type="button" class="picker-btn save" id="btnSaveTargetDate">Apply</button>
-<button type="button" class="picker-btn reset" id="btnResetTargetDate">Reset</button>
-</div>
-</div>
-</div>
-<div class="countdown-timer-grid" id="countdownTimerGrid">
-<div class="timer-block">
-<div class="timer-box">
-<span class="timer-val" id="cdDays">00</span>
-<span class="timer-glow" aria-hidden="true"></span>
-</div>
-<span class="timer-tag">DAYS</span>
-</div>
-<div class="timer-sep" aria-hidden="true">:</div>
-<div class="timer-block">
-<div class="timer-box">
-<span class="timer-val" id="cdHours">00</span>
-<span class="timer-glow" aria-hidden="true"></span>
-</div>
-<span class="timer-tag">HOURS</span>
-</div>
-<div class="timer-sep" aria-hidden="true">:</div>
-<div class="timer-block">
-<div class="timer-box">
-<span class="timer-val" id="cdMins">00</span>
-<span class="timer-glow" aria-hidden="true"></span>
-</div>
-<span class="timer-tag">MINUTES</span>
-</div>
-<div class="timer-sep" aria-hidden="true">:</div>
-<div class="timer-block">
-<div class="timer-box">
-<span class="timer-val" id="cdSecs">00</span>
-<span class="timer-glow" aria-hidden="true"></span>
-</div>
-<span class="timer-tag">SECONDS</span>
-</div>
-</div>
-<div class="celebration-banner" id="celebrationBanner" style="display:none;">
-<div class="celebration-badge-gold">🎉 IT'S CELEBRATION TIME! 🎂</div>
-<h4>Happy Birthday, Harishchandra Bhaiya! ❤️</h4>
-<p>The wait is over! Wishing you limitless smiles, prosperity, and glory!</p>
-<button type="button" class="primary celebration-trigger-btn" id="cdConfettiBtn">SHOWER CONFETTI 🎊</button>
-</div>
-<div class="live-clock-bar">
-<div class="live-clock-chip">
-<span class="chip-pulse-dot" aria-hidden="true"></span>
-<span class="chip-icon">📅</span>
-<span class="chip-text" id="liveDateText">--</span>
-</div>
-<div class="live-clock-chip">
-<span class="chip-icon">⏰</span>
-<span class="chip-text" id="liveTimeText">--:--:-- --</span>
-</div>
-</div>
-</div>
-
 <button class="primary" id="revealBtn">UNLOCK YOUR SURPRISE <span>↗</span></button>
+<div class="scroll-note">SCROLL TO EXPLORE <span>↓</span></div>
+<div class="orb orb-one"></div><div class="orb orb-two"></div>
+</section>
 <div class="scroll-note">SCROLL TO EXPLORE <span>↓</span></div>
 <div class="orb orb-one"></div><div class="orb orb-two"></div>
 </section>
@@ -236,6 +142,114 @@ print(birthday_wishes(<span class="green-text">"Harishchandra Sharma"</span>))</
 <div class="wish-pills"><span>✓ Happiness: Unlimited</span><span>✓ Success: Deployed</span><span>✓ Love: Infinite</span></div>
 </section>
 <section class="finale section" id="finale"><div class="cake" aria-label="Animated birthday cake"><div class="flame"></div><div class="candle"></div><div class="cake-top"></div><div class="cake-middle"></div><div class="cake-bottom"></div><div class="plate"></div></div><div class="section-label">03 / MAKE A WISH &amp; OUR MEMORIES</div><h2>You're one of life's<br><span class="gradient">greatest gifts.</span></h2><p class="final-message">जन्मदिन की ढेर सारी शुभकामनाएँ, भैया! May this year bring you peace, good health, new opportunities, and the happiness you truly deserve. Keep shining. Keep smiling. 🎂</p><button class="primary" id="celebrateBtn">MAKE A WISH ✨</button><p class="tinyline" id="wishResult" aria-live="polite"></p>
+
+<!-- Birthday Rap Song Player & Lyrics -->
+<div class="rap-player-card glass" id="rapPlayerCard">
+<div class="rap-player-header">
+<div class="rap-disc-wrap">
+<div class="rap-disc" id="rapDisc" aria-hidden="true">
+<span class="disc-groove"></span>
+<span class="disc-groove g2"></span>
+<span class="disc-center">🎤</span>
+</div>
+</div>
+<div class="rap-meta">
+<div class="rap-badge">🔥 SPECIAL HINDI BIRTHDAY RAP</div>
+<h3 class="rap-title">Happy Birthday Bhaiya – Special Hindi Rap</h3>
+<p class="rap-artist">Artist: <strong>DigitalMindDilip</strong> · For Harishchandra Bhaiya ❤️</p>
+</div>
+<div class="rap-eq-visualizer" id="rapEqBars" aria-hidden="true">
+<span class="eq-v eq-v1"></span>
+<span class="eq-v eq-v2"></span>
+<span class="eq-v eq-v3"></span>
+<span class="eq-v eq-v4"></span>
+<span class="eq-v eq-v5"></span>
+<span class="eq-v eq-v6"></span>
+</div>
+</div>
+
+<div class="rap-progress-container">
+<span class="rap-time" id="rapCurrentTime">0:00</span>
+<div class="rap-progress-track" id="rapProgressTrack" role="slider" aria-label="Song progress slider" tabindex="0">
+<div class="rap-progress-fill" id="rapProgressFill"></div>
+<div class="rap-progress-thumb" id="rapProgressThumb"></div>
+</div>
+<span class="rap-time" id="rapDuration">0:45</span>
+</div>
+
+<div class="rap-controls-row">
+<button type="button" class="rap-play-btn" id="rapPlayBtn" aria-label="Play or Pause Song">
+<span class="rap-play-icon" id="rapPlayIcon">▶</span>
+<span class="rap-play-text" id="rapPlayText">Play Rap Song</span>
+</button>
+<div class="rap-vol-wrap">
+<button type="button" class="rap-vol-btn" id="rapVolBtn" aria-label="Mute or Unmute" title="Mute/Unmute">🔊</button>
+<input type="range" class="rap-vol-range" id="rapVolRange" min="0" max="1" step="0.05" value="0.9" aria-label="Volume">
+</div>
+<button type="button" class="rap-lyrics-toggle" id="rapLyricsToggle">
+📜 View Rap Lyrics
+</button>
+</div>
+
+<div class="rap-lyrics-drawer" id="rapLyricsDrawer">
+<div class="lyrics-header-box">
+<h4>🎤 Song Lyrics: Happy Birthday Bhaiya</h4>
+<span class="lyrics-note">Written &amp; Composed with Love by Dilip</span>
+</div>
+<div class="lyrics-scroll-content">
+<div class="lyric-block">
+<span class="lyric-tag">[Intro]</span>
+<p>Yo! Yo!<br>
+Aaj ka din hai sabse khaas,<br>
+Bhaiya ke naam ek special rap!<br>
+Everybody make some noise!</p>
+</div>
+<div class="lyric-block">
+<span class="lyric-tag">[Verse 1]</span>
+<p>Bhaiya ho aap family ki shaan,<br>
+Aap se hi badhti ghar ki pehchaan,<br>
+Har mushkil mein dete ho saath,<br>
+Aapke hone se roshan har raat.</p>
+<p>Aapka style, aapki baat,<br>
+Sabse alag hai aapka andaaz,<br>
+Khushiyon se bhari rahe zindagi,<br>
+Har manzil par ho aapka raaj!</p>
+</div>
+<div class="lyric-block lyric-chorus">
+<span class="lyric-tag gold">[Chorus]</span>
+<p class="chorus-lines">Happy Birthday Bhaiya!<br>
+Aaj party hogi high!<br>
+Cake katega, dance hoga,<br>
+Stars bhi karenge shine!</p>
+<p class="chorus-lines">Happy Birthday Bhaiya!<br>
+Aap ho number one!<br>
+Khush raho, aage badho,<br>
+Keep shining like the sun!</p>
+</div>
+<div class="lyric-block">
+<span class="lyric-tag">[Verse 2]</span>
+<p>Na rukna kabhi, na jhukna kabhi,<br>
+Sapno ko apne chhodna nahi,<br>
+Success aapke kadam choome,<br>
+Khushiyan aapka raasta chune.</p>
+<p>Family ka pride, sabka support,<br>
+Bhaiya ka level hai always top!<br>
+Aaj ka din hai sirf aapke naam,<br>
+Duniya mein roshan ho aapka naam!</p>
+</div>
+<div class="lyric-block">
+<span class="lyric-tag">[Outro]</span>
+<p>Rab se bas itni dua hai,<br>
+Har khushi aapke naam ho,<br>
+Lambi umar aur sehat mile,<br>
+Har din aapke liye khaas ho.</p>
+<p class="outro-shout">Once Again...<br>
+<strong>HAPPY BIRTHDAY BHAIYAAAA! 🎉🎂</strong></p>
+</div>
+</div>
+</div>
+</div>
+
 <div class="finale-gallery" id="memories">
 <div class="section-label">FOREVER IN MY HEART</div>
 <h3>Little moments.<br><span class="gradient">Forever memories.</span></h3>
@@ -266,18 +280,19 @@ print(birthday_wishes(<span class="green-text">"Harishchandra Sharma"</span>))</
 <p>Designed with code. Made with love.</p>
 <p class="footer-small">For Harishchandra Sharma · Happy Birthday, Bhaiya ❤️</p>
 </footer>
-<audio id="bgMusic" src="assets/birthday-music.wav" loop preload="auto" autoplay></audio>
+<audio id="rapAudio" src="assets/audio/happy-birthday-bhaiya.mp3" preload="auto"></audio>
+<audio id="bgMusic" src="assets/birthday-music.wav" loop preload="auto"></audio>
 <div class="music-controller" id="musicController" aria-label="Music Player">
-<button class="music-toggle-btn" id="musicToggleBtn" type="button" aria-label="Play or pause background music" title="Play / Pause Birthday Music">
-<span class="music-icon" id="musicIcon">🎵</span>
+<button class="music-toggle-btn" id="musicToggleBtn" type="button" aria-label="Play or pause birthday rap song" title="Play / Pause Birthday Rap Song">
+<span class="music-icon" id="musicIcon">🎤</span>
 <span class="equalizer-bars" id="musicBars" aria-hidden="true">
 <span class="bar bar1"></span>
 <span class="bar bar2"></span>
 <span class="bar bar3"></span>
 <span class="bar bar4"></span>
 </span>
-<span class="music-label" id="musicLabel">Play Music</span>
+<span class="music-label" id="musicLabel">Play Rap Song</span>
 </button>
 </div>
-<script src="script.js?v=13"></script>
+<script src="script.js?v=14"></script>
 </body></html>

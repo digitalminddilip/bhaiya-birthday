@@ -1249,52 +1249,375 @@ body.modal-locked {
   color: var(--gold);
 }
 
-.modal-actions-row {
+/* Birthday Rap Music Player Component */
+.rap-player-card {
+  max-width: 680px;
+  margin: 32px auto 42px;
+  background: linear-gradient(165deg, rgba(28, 20, 50, .94) 0%, rgba(13, 10, 24, .98) 100%);
+  border: 1.5px solid rgba(247, 206, 122, .45);
+  border-radius: 26px;
+  padding: 28px 24px 24px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, .75), 0 0 40px rgba(247, 206, 122, .18);
+  backdrop-filter: blur(20px);
+  position: relative;
+  transition: all .35s ease;
+  text-align: left;
+}
+
+.rap-player-card.is-playing {
+  border-color: var(--gold);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, .85), 0 0 55px rgba(247, 206, 122, .32), 0 0 25px rgba(255, 139, 199, .25);
+}
+
+.rap-player-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.rap-disc-wrap {
+  flex-shrink: 0;
+}
+
+.rap-disc {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, #1a1528 28%, #090812 70%);
+  border: 2px solid rgba(247, 206, 122, .6);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .6), 0 0 16px rgba(247, 206, 122, .25);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
+  position: relative;
+  transition: transform .3s ease;
 }
 
-.modal-btn-test {
+.rap-player-card.is-playing .rap-disc {
+  animation: discSpin 3.5s linear infinite;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .7), 0 0 25px rgba(247, 206, 122, .45);
+}
+
+@keyframes discSpin {
+  100% { transform: rotate(360deg); }
+}
+
+.disc-groove {
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  border: 1px dashed rgba(247, 206, 122, .35);
+  pointer-events: none;
+}
+
+.disc-groove.g2 {
+  inset: 12px;
+  border-color: rgba(255, 139, 199, .3);
+}
+
+.disc-center {
+  font-size: 18px;
+  z-index: 2;
+}
+
+.rap-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.rap-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 99px;
+  background: rgba(255, 139, 199, .14);
+  border: 1px solid rgba(255, 139, 199, .4);
+  color: var(--pink);
+  font-family: 'DM Mono', monospace;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: .8px;
+  margin-bottom: 5px;
+}
+
+.rap-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -.02em;
+  margin: 0 0 4px;
+  line-height: 1.25;
+}
+
+.rap-artist {
+  font-size: 11.5px;
+  color: #c9c4da;
+  margin: 0;
+  font-family: 'DM Mono', monospace;
+}
+
+.rap-artist strong {
+  color: var(--gold);
+}
+
+.rap-eq-visualizer {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 24px;
+  width: 24px;
+  flex-shrink: 0;
+}
+
+.eq-v {
+  width: 3px;
+  height: 4px;
+  background: var(--gold);
+  border-radius: 2px;
+  transition: height .2s ease;
+}
+
+.rap-player-card.is-playing .eq-v1 { animation: eqBounce .5s ease-in-out infinite alternate; }
+.rap-player-card.is-playing .eq-v2 { animation: eqBounce .75s ease-in-out infinite alternate .1s; }
+.rap-player-card.is-playing .eq-v3 { animation: eqBounce .45s ease-in-out infinite alternate .25s; }
+.rap-player-card.is-playing .eq-v4 { animation: eqBounce .8s ease-in-out infinite alternate .15s; }
+.rap-player-card.is-playing .eq-v5 { animation: eqBounce .6s ease-in-out infinite alternate .3s; }
+.rap-player-card.is-playing .eq-v6 { animation: eqBounce .7s ease-in-out infinite alternate .05s; }
+
+/* Progress Container */
+.rap-progress-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.rap-time {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  width: 34px;
+  text-align: center;
+}
+
+.rap-progress-track {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, .1);
+  border-radius: 99px;
+  position: relative;
+  cursor: pointer;
+  transition: background .2s ease;
+}
+
+.rap-progress-track:hover {
+  background: rgba(255, 255, 255, .18);
+}
+
+.rap-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--gold) 0%, var(--pink) 100%);
+  border-radius: 99px;
+  position: relative;
+}
+
+.rap-progress-thumb {
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--gold);
+  box-shadow: 0 0 10px rgba(247, 206, 122, .6);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .2s ease;
+}
+
+.rap-progress-track:hover .rap-progress-thumb,
+.rap-player-card.is-playing .rap-progress-thumb {
+  opacity: 1;
+}
+
+/* Controls */
+.rap-controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.rap-play-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
   background: linear-gradient(135deg, #f7ce7a 0%, #ff8bc7 100%);
   border: none;
   border-radius: 99px;
+  padding: 10px 22px;
   color: #120e1e;
   font-family: 'DM Mono', monospace;
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: .5px;
-  padding: 10px 20px;
   cursor: pointer;
   box-shadow: 0 6px 20px rgba(247, 206, 122, .35);
   transition: all .25s ease;
 }
 
-.modal-btn-test:hover {
-  transform: translateY(-2px) scale(1.03);
+.rap-play-btn:hover {
+  transform: translateY(-2px) scale(1.02);
   box-shadow: 0 10px 28px rgba(247, 206, 122, .5);
   filter: brightness(1.08);
 }
 
-.modal-btn-edit {
-  background: rgba(255, 255, 255, .08);
-  border: 1px solid rgba(255, 255, 255, .25);
+.rap-vol-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, .06);
+  border: 1px solid rgba(255, 255, 255, .15);
   border-radius: 99px;
-  color: #dfdaec;
+  padding: 6px 14px;
+}
+
+.rap-vol-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.rap-vol-range {
+  width: 75px;
+  height: 4px;
+  accent-color: var(--gold);
+  cursor: pointer;
+}
+
+.rap-lyrics-toggle {
+  background: rgba(255, 255, 255, .08);
+  border: 1px solid rgba(247, 206, 122, .35);
+  border-radius: 99px;
+  padding: 9px 18px;
+  color: var(--gold);
   font-family: 'DM Mono', monospace;
   font-size: 11px;
-  padding: 9px 16px;
+  font-weight: 600;
   cursor: pointer;
   transition: all .2s ease;
 }
 
-.modal-btn-edit:hover {
-  background: rgba(255, 255, 255, .15);
+.rap-lyrics-toggle:hover {
+  background: rgba(247, 206, 122, .18);
   border-color: var(--gold);
+  transform: translateY(-1px);
+}
+
+/* Lyrics Drawer */
+.rap-lyrics-drawer {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height .45s cubic-bezier(.16, 1, .3, 1), opacity .35s ease;
+}
+
+.rap-lyrics-drawer.open {
+  max-height: 600px;
+  opacity: 1;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px dashed rgba(255, 255, 255, .15);
+}
+
+.lyrics-header-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.lyrics-header-box h4 {
+  margin: 0;
+  font-size: 15px;
+  color: #fff;
+}
+
+.lyrics-note {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
   color: var(--gold);
+}
+
+.lyrics-scroll-content {
+  max-height: 260px;
+  overflow-y: auto;
+  background: rgba(10, 8, 18, .75);
+  border: 1px solid rgba(247, 206, 122, .22);
+  border-radius: 16px;
+  padding: 16px 18px;
+  line-height: 1.7;
+}
+
+.lyrics-scroll-content::-webkit-scrollbar {
+  width: 6px;
+}
+.lyrics-scroll-content::-webkit-scrollbar-thumb {
+  background: rgba(247, 206, 122, .4);
+  border-radius: 4px;
+}
+
+.lyric-block {
+  margin-bottom: 16px;
+}
+
+.lyric-block:last-child {
+  margin-bottom: 0;
+}
+
+.lyric-tag {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--pink);
+  margin-bottom: 4px;
+}
+
+.lyric-tag.gold {
+  color: var(--gold);
+}
+
+.lyric-block p {
+  margin: 0 0 8px;
+  font-size: 13.5px;
+  color: #dfdaec;
+}
+
+.lyric-chorus {
+  background: rgba(247, 206, 122, .08);
+  border-left: 3px solid var(--gold);
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+.chorus-lines {
+  color: #fff !important;
+  font-weight: 600;
+}
+
+.outro-shout {
+  color: var(--gold) !important;
+  font-size: 14px !important;
+  font-weight: 700;
 }
 
 .modal-footer-love {
@@ -1754,8 +2077,16 @@ body.modal-locked {
   .modal-title { font-size: 1.6rem; }
   .modal-subtitle { font-size: 12px; margin-bottom: 14px; }
   .modal-info-pill { font-size: 9.5px; padding: 5px 10px; }
-  .modal-btn-test { font-size: 10.5px; padding: 9px 16px; width: 100%; }
-  .modal-btn-edit { font-size: 10px; padding: 8px 14px; width: 100%; }
+  /* Responsive Rap Player */
+  .rap-player-card { padding: 20px 16px; margin: 24px auto 32px; border-radius: 20px; }
+  .rap-player-header { gap: 12px; }
+  .rap-disc { width: 48px; height: 48px; }
+  .disc-center { font-size: 15px; }
+  .rap-title { font-size: 15px; }
+  .rap-controls-row { flex-direction: column; align-items: stretch; gap: 10px; }
+  .rap-play-btn { width: 100%; justify-content: center; }
+  .rap-vol-wrap { width: 100%; justify-content: center; }
+  .rap-lyrics-toggle { width: 100%; text-align: center; }
 
   /* Responsive Countdown */
   .footer-countdown-wrap,

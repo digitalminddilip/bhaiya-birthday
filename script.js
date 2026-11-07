@@ -121,116 +121,256 @@ if(giftFrameEl){
   });
 }
 
-// Background Music System
-const bgMusic=document.getElementById('bgMusic');
-const musicToggleBtn=document.getElementById('musicToggleBtn');
-const musicLabel=document.getElementById('musicLabel');
-let isMusicPlaying=false;
-let userHasInteracted=false;
+// ==========================================
+// Birthday Rap Music & Audio Player System (Unified)
+// ==========================================
+const rapAudio = document.getElementById('rapAudio');
+const bgMusic = document.getElementById('bgMusic');
+const musicToggleBtn = document.getElementById('musicToggleBtn');
+const musicLabel = document.getElementById('musicLabel');
 
-function setMusicUI(playing){
-  isMusicPlaying=playing;
-  if(musicToggleBtn){
-    if(playing){
+// Rap Player UI elements in Make a Wish section
+const rapPlayerCard = document.getElementById('rapPlayerCard');
+const rapPlayBtn = document.getElementById('rapPlayBtn');
+const rapPlayIcon = document.getElementById('rapPlayIcon');
+const rapPlayText = document.getElementById('rapPlayText');
+const rapProgressTrack = document.getElementById('rapProgressTrack');
+const rapProgressFill = document.getElementById('rapProgressFill');
+const rapProgressThumb = document.getElementById('rapProgressThumb');
+const rapCurrentTime = document.getElementById('rapCurrentTime');
+const rapDuration = document.getElementById('rapDuration');
+const rapVolBtn = document.getElementById('rapVolBtn');
+const rapVolRange = document.getElementById('rapVolRange');
+const rapLyricsToggle = document.getElementById('rapLyricsToggle');
+const rapLyricsDrawer = document.getElementById('rapLyricsDrawer');
+
+let isMusicPlaying = false;
+let userHasInteracted = false;
+
+function formatAudioTime(secs){
+  if (isNaN(secs) || secs < 0) return '0:00';
+  const m = Math.floor(secs / 60);
+  const s = Math.floor(secs % 60);
+  return `${m}:${s < 10 ? '0' : ''}${s}`;
+}
+
+function syncPlayerUI(playing){
+  isMusicPlaying = playing;
+
+  if (rapPlayerCard) {
+    if (playing) rapPlayerCard.classList.add('is-playing');
+    else rapPlayerCard.classList.remove('is-playing');
+  }
+  if (rapPlayIcon) rapPlayIcon.textContent = playing ? '⏸' : '▶';
+  if (rapPlayText) rapPlayText.textContent = playing ? 'Pause Rap' : 'Play Rap Song';
+
+  // Synchronize floating music controller
+  if (musicToggleBtn) {
+    if (playing) {
       musicToggleBtn.classList.add('is-playing');
-      if(musicLabel)musicLabel.textContent='Music: ON';
-      musicToggleBtn.setAttribute('title','Pause Birthday Music');
-    }else{
+      if (musicLabel) musicLabel.textContent = 'Rap: ON';
+      musicToggleBtn.setAttribute('title', 'Pause Birthday Rap Song');
+    } else {
       musicToggleBtn.classList.remove('is-playing');
-      if(musicLabel)musicLabel.textContent='Play Music';
-      musicToggleBtn.setAttribute('title','Play Birthday Music');
+      if (musicLabel) musicLabel.textContent = 'Play Rap Song';
+      musicToggleBtn.setAttribute('title', 'Play Birthday Rap Song');
     }
   }
 }
 
 function startMusic(){
-  if(!bgMusic)return;
-  bgMusic.volume=0.6;
-  const promise=bgMusic.play();
-  if(promise!==undefined){
-    promise.then(()=>{
-      setMusicUI(true);
+  playRapSong();
+}
+
+function pauseMusic(){
+  pauseRapSong();
+}
+
+function playRapSong(){
+  if (!rapAudio) return;
+  // If tone audio was running, stop it so vocal rap is clean
+  if (bgMusic && !bgMusic.paused) {
+    bgMusic.pause();
+  }
+
+  const promise = rapAudio.play();
+  if (promise !== undefined) {
+    promise.then(() => {
+      syncPlayerUI(true);
       removeInteractionListeners();
-    }).catch(err=>{
-      console.log('Audio autoplay prevented by browser policy, waiting for first interaction:',err);
+    }).catch(err => {
+      console.log('Audio autoplay prevented by browser policy:', err);
     });
   }
 }
 
-function pauseMusic(){
-  if(!bgMusic)return;
-  bgMusic.pause();
-  setMusicUI(false);
+function pauseRapSong(){
+  if (!rapAudio) return;
+  rapAudio.pause();
+  syncPlayerUI(false);
 }
 
-function toggleMusic(){
-  if(isMusicPlaying){
-    pauseMusic();
-  }else{
-    startMusic();
+function toggleRapSong(){
+  if (rapAudio && !rapAudio.paused) {
+    pauseRapSong();
+  } else {
+    playRapSong();
   }
 }
 
-if(musicToggleBtn){
-  musicToggleBtn.addEventListener('click',(e)=>{
+function toggleMusic(){
+  toggleRapSong();
+}
+
+// Attach event listeners for audio player
+if (rapPlayBtn) {
+  rapPlayBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    userHasInteracted=true;
-    toggleMusic();
+    userHasInteracted = true;
+    toggleRapSong();
   });
 }
 
-const interactionEvents=['click','touchstart','pointerdown','scroll','keydown'];
+if (musicToggleBtn) {
+  musicToggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    userHasInteracted = true;
+    toggleRapSong();
+  });
+}
+
+if (rapAudio) {
+  rapAudio.addEventListener('loadedmetadata', () => {
+    if (rapDuration) rapDuration.textContent = formatAudioTime(rapAudio.duration);
+  });
+  rapAudio.addEventListener('timeupdate', () => {
+    if (!rapAudio.duration) return;
+    const progress = (rapAudio.currentTime / rapAudio.duration) * 100;
+    if (rapProgressFill) rapProgressFill.style.width = progress + '%';
+    if (rapProgressThumb) rapProgressThumb.style.left = progress + '%';
+    if (rapCurrentTime) rapCurrentTime.textContent = formatAudioTime(rapAudio.currentTime);
+  });
+  rapAudio.addEventListener('play', () => syncPlayerUI(true));
+  rapAudio.addEventListener('pause', () => syncPlayerUI(false));
+  rapAudio.addEventListener('ended', () => {
+    syncPlayerUI(false);
+    if (rapProgressFill) rapProgressFill.style.width = '0%';
+    if (rapProgressThumb) rapProgressThumb.style.left = '0%';
+  });
+}
+
+if (rapProgressTrack) {
+  rapProgressTrack.addEventListener('click', (e) => {
+    if (!rapAudio || !rapAudio.duration) return;
+    const rect = rapProgressTrack.getBoundingClientRect();
+    const pos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    rapAudio.currentTime = pos * rapAudio.duration;
+    if (rapAudio.paused) playRapSong();
+  });
+}
+
+if (rapVolRange && rapAudio) {
+  rapVolRange.addEventListener('input', (e) => {
+    rapAudio.volume = parseFloat(e.target.value);
+    if (rapVolBtn) {
+      rapVolBtn.textContent = rapAudio.volume === 0 ? '🔇' : (rapAudio.volume < 0.5 ? '🔉' : '🔊');
+    }
+  });
+}
+
+if (rapVolBtn && rapAudio) {
+  rapVolBtn.addEventListener('click', () => {
+    if (rapAudio.volume > 0) {
+      rapAudio.dataset.prevVol = rapAudio.volume;
+      rapAudio.volume = 0;
+      if (rapVolRange) rapVolRange.value = 0;
+      rapVolBtn.textContent = '🔇';
+    } else {
+      const prev = parseFloat(rapAudio.dataset.prevVol || '0.9');
+      rapAudio.volume = prev;
+      if (rapVolRange) rapVolRange.value = prev;
+      rapVolBtn.textContent = '🔊';
+    }
+  });
+}
+
+if (rapLyricsToggle && rapLyricsDrawer) {
+  rapLyricsToggle.addEventListener('click', () => {
+    rapLyricsDrawer.classList.toggle('open');
+    if (rapLyricsDrawer.classList.contains('open')) {
+      rapLyricsToggle.textContent = '📜 Hide Rap Lyrics';
+    } else {
+      rapLyricsToggle.textContent = '📜 View Rap Lyrics';
+    }
+  });
+}
+
+const interactionEvents = ['click','touchstart','pointerdown','keydown'];
 function onUserInteraction(){
-  if(!isMusicPlaying){
-    userHasInteracted=true;
+  if (!isMusicPlaying && userHasInteracted) {
     startMusic();
   }
 }
 function removeInteractionListeners(){
-  interactionEvents.forEach(evt=>{
-    window.removeEventListener(evt,onUserInteraction);
+  interactionEvents.forEach(evt => {
+    window.removeEventListener(evt, onUserInteraction);
   });
 }
-interactionEvents.forEach(evt=>{
-  window.addEventListener(evt,onUserInteraction,{passive:true});
+interactionEvents.forEach(evt => {
+  window.addEventListener(evt, onUserInteraction, { passive: true });
 });
 
-// Attempt autoplay immediately on load
-startMusic();
-window.addEventListener('DOMContentLoaded',startMusic);
-window.addEventListener('load',startMusic);
-
-document.getElementById('revealBtn').addEventListener('click',()=>{
+document.getElementById('revealBtn').addEventListener('click', () => {
   burst();
-  if(!isMusicPlaying)startMusic();
-  const giftEl=document.getElementById('gift');
-  if(giftEl){
-    giftEl.scrollIntoView({behavior:'smooth'});
-    setTimeout(()=>{
+  userHasInteracted = true;
+  if (!isMusicPlaying) startMusic();
+  const giftEl = document.getElementById('gift');
+  if (giftEl) {
+    giftEl.scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => {
       openGift();
-    },500);
-  }else{
-    document.getElementById('message').scrollIntoView({behavior:'smooth'});
+    }, 500);
+  } else {
+    document.getElementById('message').scrollIntoView({ behavior: 'smooth' });
   }
-  document.querySelectorAll('.letter').forEach((el,i)=>{
+  document.querySelectorAll('.letter').forEach((el, i) => {
     el.classList.remove('reveal');
-    setTimeout(()=>el.classList.add('reveal'),i*180);
+    setTimeout(() => el.classList.add('reveal'), i * 180);
   });
 });
-document.getElementById('celebrateBtn').addEventListener('click',()=>{
+
+// Make a Wish Button click -> triggers confetti, wish message, and plays the Birthday Rap Song!
+document.getElementById('celebrateBtn').addEventListener('click', () => {
   burst();
-  setTimeout(()=>burst(),320);
-  if(!isMusicPlaying)startMusic();
-  const el=document.getElementById('wishResult');
-  el.textContent='✨ Wish activated! May every good thing find its way to you, Bhaiya. ✨';
-  el.classList.add('reveal');
+  setTimeout(() => burst(), 320);
+  userHasInteracted = true;
+
+  // Play the Hindi Rap Voice Song!
+  playRapSong();
+
+  // Open the lyrics drawer
+  if (rapLyricsDrawer) {
+    rapLyricsDrawer.classList.add('open');
+    if (rapLyricsToggle) rapLyricsToggle.textContent = '📜 Hide Rap Lyrics';
+  }
+
+  const el = document.getElementById('wishResult');
+  if (el) {
+    el.textContent = '✨ Wish activated! Happy Birthday Harishchandra Bhaiya! Playing your special rap song! ✨';
+    el.classList.add('reveal');
+  }
+
+  // Highlight and scroll to the Rap Player
+  if (rapPlayerCard) {
+    rapPlayerCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 });
 
 // ==========================================
 // Midnight Countdown Popup Gate & Surprise Unlock
 // ==========================================
 (function initMidnightCountdownGate(){
-  // Default Target Date: 08 November 2026, 12:00 AM (Can be customized via the UI "Change Date" button)
+  // Target Date: 08 November 2026, 12:00 AM (Midnight)
   const DEFAULT_TARGET_ISO = '2026-11-08T00:00:00';
 
   function getTargetDate(){
@@ -241,7 +381,6 @@ document.getElementById('celebrateBtn').addEventListener('click',()=>{
     }
     const defaultDate = new Date(DEFAULT_TARGET_ISO);
     const now = new Date();
-    // If default target date has passed by more than 2 days and no saved date, roll over to next year
     if (now.getTime() - defaultDate.getTime() > 2 * 24 * 60 * 60 * 1000) {
       return new Date(now.getFullYear() + 1, defaultDate.getMonth(), defaultDate.getDate(), defaultDate.getHours(), defaultDate.getMinutes());
     }
@@ -250,41 +389,17 @@ document.getElementById('celebrateBtn').addEventListener('click',()=>{
 
   let currentTargetDate = getTargetDate();
 
-  // Modal elements
   const modalOverlay = document.getElementById('countdownModalOverlay');
   const modalLockIcon = document.getElementById('modalLockIcon');
   const modalLockStatus = document.getElementById('modalLockStatus');
   const modalSubtitle = document.getElementById('modalSubtitle');
   const mTargetDisplay = document.getElementById('mTargetDisplay');
   const mLiveTimeDisplay = document.getElementById('mLiveTimeDisplay');
-  const btnTestUnlock = document.getElementById('btnTestUnlock');
-  const btnModalEditDate = document.getElementById('btnModalEditDate');
-  const modalPickerDrawer = document.getElementById('modalPickerDrawer');
-  const mTargetDateInput = document.getElementById('mTargetDateInput');
-  const btnModalSaveDate = document.getElementById('btnModalSaveDate');
-  const btnModalResetDate = document.getElementById('btnModalResetDate');
 
   const mCdDays = document.getElementById('mCdDays');
   const mCdHours = document.getElementById('mCdHours');
   const mCdMins = document.getElementById('mCdMins');
   const mCdSecs = document.getElementById('mCdSecs');
-
-  // Page countdown elements
-  const cdDays = document.getElementById('cdDays');
-  const cdHours = document.getElementById('cdHours');
-  const cdMins = document.getElementById('cdMins');
-  const cdSecs = document.getElementById('cdSecs');
-  const liveDateText = document.getElementById('liveDateText');
-  const liveTimeText = document.getElementById('liveTimeText');
-  const targetDateDisplay = document.getElementById('targetDateDisplay');
-  const countdownStatusText = document.getElementById('countdownStatusText');
-  const celebrationBanner = document.getElementById('celebrationBanner');
-  const btnDateToggle = document.getElementById('btnDateToggle');
-  const countdownPickerDrawer = document.getElementById('countdownPickerDrawer');
-  const targetDateInput = document.getElementById('targetDateInput');
-  const btnSaveTargetDate = document.getElementById('btnSaveTargetDate');
-  const btnResetTargetDate = document.getElementById('btnResetTargetDate');
-  const cdConfettiBtn = document.getElementById('cdConfettiBtn');
 
   function formatDateTimeNice(date){
     return date.toLocaleString('en-US', {
@@ -297,15 +412,8 @@ document.getElementById('celebrateBtn').addEventListener('click',()=>{
     });
   }
 
-  function updateTargetDisplays(){
-    const formatted = formatDateTimeNice(currentTargetDate);
-    if (mTargetDisplay) mTargetDisplay.textContent = formatted;
-    if (targetDateDisplay) targetDateDisplay.textContent = formatted;
-
-    const pad = (n) => String(n).padStart(2, '0');
-    const localISO = `${currentTargetDate.getFullYear()}-${pad(currentTargetDate.getMonth() + 1)}-${pad(currentTargetDate.getDate())}T${pad(currentTargetDate.getHours())}:${pad(currentTargetDate.getMinutes())}`;
-    if (mTargetDateInput) mTargetDateInput.value = localISO;
-    if (targetDateInput) targetDateInput.value = localISO;
+  if (mTargetDisplay) {
+    mTargetDisplay.textContent = formatDateTimeNice(currentTargetDate);
   }
 
   let isUnlocked = false;
@@ -314,11 +422,10 @@ document.getElementById('celebrateBtn').addEventListener('click',()=>{
     if (isUnlocked) return;
     isUnlocked = true;
 
-    // 1. Update Modal Visuals to Celebration
     if (modalLockIcon) modalLockIcon.textContent = '🎉';
     if (modalLockStatus) modalLockStatus.textContent = "IT'S CELEBRATION TIME!";
     if (modalSubtitle) {
-      modalSubtitle.innerHTML = '<strong style="color:#f7ce7a;font-size:16px;">Happy Birthday, Harishchandra Bhaiya! ❤️</strong><br>Unlocking your surprise gift right now...';
+      modalSubtitle.innerHTML = '<strong style="color:#f7ce7a;font-size:16px;">Happy Birthday, Harishchandra Bhaiya! ❤️</strong><br>Unlocking your surprise right now...';
     }
 
     if (typeof playGiftChime === 'function') playGiftChime();
@@ -327,19 +434,17 @@ document.getElementById('celebrateBtn').addEventListener('click',()=>{
       setTimeout(() => burst(), 300);
     }
 
-    // 2. Animate and remove modal
     setTimeout(() => {
       if (modalOverlay) {
         modalOverlay.classList.add('unlocking');
       }
       document.body.classList.remove('modal-locked');
 
-      if (typeof startMusic === 'function') startMusic();
+      playRapSong();
 
       setTimeout(() => {
         if (modalOverlay) modalOverlay.style.display = 'none';
 
-        // 3. Scroll to surprise gift section and open gift automatically!
         const giftSection = document.getElementById('gift');
         if (giftSection) {
           giftSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -352,6 +457,14 @@ document.getElementById('celebrateBtn').addEventListener('click',()=>{
     }, 1200);
   }
 
+  // Secret bypass for testing: double-click lock icon unlocks immediately
+  if (modalLockIcon) {
+    modalLockIcon.style.cursor = 'pointer';
+    modalLockIcon.addEventListener('dblclick', () => {
+      triggerUnlockAndSurprise();
+    });
+  }
+
   function updateTick(){
     const now = new Date();
     const liveTimeStr = now.toLocaleTimeString('en-US', {
@@ -360,46 +473,25 @@ document.getElementById('celebrateBtn').addEventListener('click',()=>{
       second: '2-digit',
       hour12: true
     });
-    const liveDateStr = now.toLocaleDateString('en-US', {
-      weekday: 'short',
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric'
-    });
 
     if (mLiveTimeDisplay) mLiveTimeDisplay.textContent = liveTimeStr;
-    if (liveTimeText) liveTimeText.textContent = liveTimeStr;
-    if (liveDateText) liveDateText.textContent = liveDateStr;
 
     const diff = currentTargetDate.getTime() - now.getTime();
 
     if (diff <= 0) {
-      // Reached 00:00:00:00!
       const zeroes = '00';
       if (mCdDays) mCdDays.textContent = zeroes;
       if (mCdHours) mCdHours.textContent = zeroes;
       if (mCdMins) mCdMins.textContent = zeroes;
       if (mCdSecs) mCdSecs.textContent = zeroes;
 
-      if (cdDays) cdDays.textContent = zeroes;
-      if (cdHours) cdHours.textContent = zeroes;
-      if (cdMins) cdMins.textContent = zeroes;
-      if (cdSecs) cdSecs.textContent = zeroes;
-
-      if (celebrationBanner) celebrationBanner.style.display = 'block';
-      if (countdownStatusText) countdownStatusText.textContent = "🎉 IT'S CELEBRATION TIME!";
-
       if (!isUnlocked) {
         triggerUnlockAndSurprise();
       }
     } else {
-      // Still locked in countdown popup
       if (!isUnlocked && modalOverlay && modalOverlay.style.display !== 'none') {
         document.body.classList.add('modal-locked');
       }
-
-      if (celebrationBanner) celebrationBanner.style.display = 'none';
-      if (countdownStatusText) countdownStatusText.textContent = 'LIVE COUNTDOWN';
 
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
       const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
@@ -407,112 +499,13 @@ document.getElementById('celebrateBtn').addEventListener('click',()=>{
       const seconds = Math.floor((diff / 1000) % 60);
 
       const pad = (n) => String(n).padStart(2, '0');
-      const dStr = pad(days), hStr = pad(hours), mStr = pad(minutes), sStr = pad(seconds);
-
-      if (mCdDays) mCdDays.textContent = dStr;
-      if (mCdHours) mCdHours.textContent = hStr;
-      if (mCdMins) mCdMins.textContent = mStr;
-      if (mCdSecs) mCdSecs.textContent = sStr;
-
-      if (cdDays) cdDays.textContent = dStr;
-      if (cdHours) cdHours.textContent = hStr;
-      if (cdMins) cdMins.textContent = mStr;
-      if (cdSecs) cdSecs.textContent = sStr;
+      if (mCdDays) mCdDays.textContent = pad(days);
+      if (mCdHours) mCdHours.textContent = pad(hours);
+      if (mCdMins) mCdMins.textContent = pad(minutes);
+      if (mCdSecs) mCdSecs.textContent = pad(seconds);
     }
   }
 
-  // Interactive controls for modal
-  if (btnTestUnlock) {
-    btnTestUnlock.addEventListener('click', () => {
-      triggerUnlockAndSurprise();
-    });
-  }
-
-  if (btnModalEditDate) {
-    btnModalEditDate.addEventListener('click', () => {
-      if (modalPickerDrawer) modalPickerDrawer.classList.toggle('open');
-    });
-  }
-
-  if (btnModalSaveDate) {
-    btnModalSaveDate.addEventListener('click', () => {
-      if (!mTargetDateInput || !mTargetDateInput.value) return;
-      const selected = new Date(mTargetDateInput.value);
-      if (!isNaN(selected.getTime())) {
-        currentTargetDate = selected;
-        localStorage.setItem('bhaiya_target_date_v2', selected.toISOString());
-        updateTargetDisplays();
-        isUnlocked = false;
-        if (modalOverlay) {
-          modalOverlay.style.display = 'flex';
-          modalOverlay.classList.remove('unlocking');
-          document.body.classList.add('modal-locked');
-        }
-        if (modalPickerDrawer) modalPickerDrawer.classList.remove('open');
-        updateTick();
-      }
-    });
-  }
-
-  if (btnModalResetDate) {
-    btnModalResetDate.addEventListener('click', () => {
-      localStorage.removeItem('bhaiya_target_date_v2');
-      currentTargetDate = new Date(DEFAULT_TARGET_ISO);
-      updateTargetDisplays();
-      isUnlocked = false;
-      if (modalOverlay) {
-        modalOverlay.style.display = 'flex';
-        modalOverlay.classList.remove('unlocking');
-        document.body.classList.add('modal-locked');
-      }
-      if (modalPickerDrawer) modalPickerDrawer.classList.remove('open');
-      updateTick();
-    });
-  }
-
-  // Page countdown controls (if modified on page)
-  if (btnDateToggle) {
-    btnDateToggle.addEventListener('click', () => {
-      if (countdownPickerDrawer) countdownPickerDrawer.classList.toggle('open');
-    });
-  }
-
-  if (btnSaveTargetDate) {
-    btnSaveTargetDate.addEventListener('click', () => {
-      if (!targetDateInput || !targetDateInput.value) return;
-      const selected = new Date(targetDateInput.value);
-      if (!isNaN(selected.getTime())) {
-        currentTargetDate = selected;
-        localStorage.setItem('bhaiya_target_date_v2', selected.toISOString());
-        updateTargetDisplays();
-        isUnlocked = false;
-        updateTick();
-        if (countdownPickerDrawer) countdownPickerDrawer.classList.remove('open');
-      }
-    });
-  }
-
-  if (btnResetTargetDate) {
-    btnResetTargetDate.addEventListener('click', () => {
-      localStorage.removeItem('bhaiya_target_date_v2');
-      currentTargetDate = new Date(DEFAULT_TARGET_ISO);
-      updateTargetDisplays();
-      isUnlocked = false;
-      updateTick();
-      if (countdownPickerDrawer) countdownPickerDrawer.classList.remove('open');
-    });
-  }
-
-  if (cdConfettiBtn) {
-    cdConfettiBtn.addEventListener('click', () => {
-      if (typeof burst === 'function') {
-        burst();
-        setTimeout(() => burst(), 300);
-      }
-    });
-  }
-
-  updateTargetDisplays();
   updateTick();
   setInterval(updateTick, 1000);
 })();
